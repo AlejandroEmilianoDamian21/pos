@@ -1,0 +1,17 @@
+-- Table: public.usuario
+
+-- DROP TABLE IF EXISTS public.usuario;
+
+CREATE TABLE IF NOT EXISTS public.usuario
+(
+    idusuario integer NOT NULL DEFAULT nextval('usuario_idusuario_seq'::regclass),
+    username text COLLATE pg_catalog."default",
+    password text COLLATE pg_catalog."default",
+    nombre text COLLATE pg_catalog."default",
+    CONSTRAINT usuario_pkey PRIMARY KEY (idusuario)
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.usuario
+    OWNER to postgres;
