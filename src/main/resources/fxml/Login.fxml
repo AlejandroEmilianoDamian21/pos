@@ -1,36 +1,121 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXCheckBox?>
+<?import com.jfoenix.controls.JFXPasswordField?>
+<?import com.jfoenix.controls.JFXTextField?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Separator?>
+<?import javafx.scene.effect.DropShadow?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
-<?import org.kordamp.ikonli.javafx.FontIcon?>
+<?import javafx.scene.shape.SVGPath?>
+<?import javafx.scene.text.Font?>
 
-
-<HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
+<HBox fx:id="root" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="375.0" prefWidth="738.0" style="-fx-background-color: #2D3447;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.systemnecs.controller.LoginController">
    <children>
-      <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="15.0" HBox.hgrow="ALWAYS">
+      <VBox alignment="CENTER" maxWidth="-Infinity" prefHeight="200.0" prefWidth="323.0" spacing="15.0" HBox.hgrow="ALWAYS">
          <children>
-            <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
+            <ImageView fitHeight="115.0" fitWidth="275.0" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@../images/logo.png" />
                </image>
+               <effect>
+                  <DropShadow color="WHITE" />
+               </effect>
             </ImageView>
-            <JFXButton text="+54 9 3863-44-0349">
-               <graphic>
-                  <FontIcon iconColor="#25d364" iconLiteral="fab-whatsapp" iconSize="28" />
-               </graphic>
+            <JFXButton fx:id="btnWhatsapp" text="+57 123 456 789" textFill="#cfd0d3">
+               <font>
+                  <Font size="14.0" />
+               </font>
             </JFXButton>
-            <JFXButton text="www.bananacode.com">
-               <graphic>
-                  <FontIcon iconColor="#087ddd" iconLiteral="fas-external-link-alt" iconSize="24" />
-               </graphic>
+            <JFXButton fx:id="btnPagina" text="www.systemnecs.com" textFill="#cfd0d3">
+               <font>
+                  <Font size="14.0" />
+               </font>
             </JFXButton>
          </children>
       </VBox>
-      <Separator orientation="VERTICAL" prefHeight="200.0" />
-      <VBox prefHeight="200.0" prefWidth="100.0" HBox.hgrow="ALWAYS" />
+      <Separator maxHeight="-Infinity" orientation="VERTICAL" prefHeight="300.0">
+         <effect>
+            <DropShadow color="WHITE" />
+         </effect>
+      </Separator>
+      <VBox prefHeight="200.0" prefWidth="353.0" HBox.hgrow="ALWAYS">
+         <children>
+            <GridPane prefWidth="409.0" VBox.vgrow="ALWAYS">
+               <columnConstraints>
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="131.0" minWidth="10.0" prefWidth="105.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="168.0" minWidth="10.0" prefWidth="132.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="178.0" minWidth="10.0" prefWidth="166.0" />
+               </columnConstraints>
+               <rowConstraints>
+                  <RowConstraints maxHeight="71.0" minHeight="3.0" prefHeight="8.0" vgrow="SOMETIMES" />
+                  <RowConstraints maxHeight="137.0" minHeight="0.0" prefHeight="46.0" vgrow="SOMETIMES" />
+                  <RowConstraints maxHeight="143.0" minHeight="10.0" prefHeight="53.0" vgrow="SOMETIMES" />
+                  <RowConstraints maxHeight="138.0" minHeight="10.0" prefHeight="53.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+               </rowConstraints>
+               <children>
+                  <Label text="System" textFill="#2196f3" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
+                     <font>
+                        <Font name="System Bold Italic" size="38.0" />
+                     </font>
+                     <effect>
+                        <DropShadow color="WHITE" spread="0.64" />
+                     </effect>
+                  </Label>
+                  <Label text="Necs" textFill="#a0a2ab" GridPane.columnIndex="2" GridPane.rowIndex="1">
+                     <font>
+                        <Font name="System Bold Italic" size="38.0" />
+                     </font>
+                     <effect>
+                        <DropShadow color="WHITE" spread="0.64" />
+                     </effect>
+                  </Label>
+                  <JFXTextField fx:id="cjUsername" focusColor="#e7e9ee" promptText="Username" style="-fx-prompt-text-fill: #a0a2ab; -fx-text-fill: white;" text="admin" unFocusColor="#a0a2ab" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="2">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                     <GridPane.margin>
+                        <Insets left="10.0" right="30.0" />
+                     </GridPane.margin>
+                  </JFXTextField>
+
+                  <JFXPasswordField fx:id="cjPassword" focusColor="#e7e9ee" promptText="Contraseña" style="-fx-prompt-text-fill: #a0a2ab; -fx-text-fill: white;" text="admin" unFocusColor="#a0a2ab" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="3">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                     <GridPane.margin>
+                        <Insets left="10.0" right="30.0" />
+                     </GridPane.margin>
+                  </JFXPasswordField>
+
+                  <JFXButton fx:id="btnIniciar" onAction="#login" style="-fx-background-color: #2196f3;" text="Iniciar" textFill="WHITE" GridPane.columnIndex="2" GridPane.halignment="RIGHT" GridPane.rowIndex="4">
+                     <GridPane.margin>
+                        <Insets bottom="0" left="0" right="30" top="0" />
+                     </GridPane.margin>
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </JFXButton>
+                  <JFXCheckBox text="Recordarme" textFill="#a0a2ab" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="4">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </JFXCheckBox>
+                  <SVGPath content="M8 7C9.65685 7 11 5.65685 11 4C11 2.34315 9.65685 1 8 1C6.34315 1 5 2.34315 5 4C5 5.65685 6.34315 7 8 7Z" GridPane.rowIndex="2" />
+                  <SVGPath content="M14 12C14 10.3431 12.6569 9 11 9H5C3.34315 9 2 10.3431 2 12V15H14V12Z" GridPane.rowIndex="2" />
+               </children>
+            </GridPane>
+         </children>
+      </VBox>
    </children>
 </HBox>

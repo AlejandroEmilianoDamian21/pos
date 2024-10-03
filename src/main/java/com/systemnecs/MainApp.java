@@ -3,7 +3,7 @@ package com.systemnecs;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -17,9 +17,9 @@ public class MainApp extends Application {
     public void start(Stage primaryStage) throws IOException {
 
         FXMLLoader fxmlLoader = new FXMLLoader();
-        AnchorPane anchorPane = fxmlLoader.load(getClass().getResource("/fxml/Login.fxml"));
+        HBox root  = fxmlLoader.load(getClass().getResource("/fxml/Login.fxml"));
 
-        primaryStage.setScene(new Scene(anchorPane));
+        primaryStage.setScene(new Scene(root));
         primaryStage.show();
     }
 }
