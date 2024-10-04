@@ -28,7 +28,6 @@ public class ConexionBD {
     public ResultSet CONSULTAR(String sql) throws  SQLException{
         ResultSet rs = null;
         rs = statement.executeQuery(sql);
-        System.out.println(sql);
         return rs;
     }
 
