@@ -15,3 +15,14 @@ TABLESPACE pg_default;
 
 ALTER TABLE IF EXISTS public.usuario
     OWNER to postgres;
+
+
+    create table public.cliente (
+    	idcliente serial not null,
+    	nombrecliente text null,
+    	apellidocliente text null,
+    	direccioncliente text null,
+    	telefonocliente text null,
+    	numerodocumento text null,
+    	constraint cliente_pkey primary key (idcliente)
+    );

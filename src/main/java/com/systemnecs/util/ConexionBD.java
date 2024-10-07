@@ -10,10 +10,10 @@ public class ConexionBD {
     private Statement statement;
 
     //Tiki-PC
-    private static String IP = "localhost", PUERTO ="5432", BD = "ventas" , USER = "postgres" , PASS = "admin";
+    //private static String IP = "localhost", PUERTO ="5432", BD = "ventas" , USER = "postgres" , PASS = "admin";
 
     //Digicom-PC
-    //private static String IP = "localhost", PUERTO ="5432", BD = "VENTAS" , USER = "postgres" , PASS = "admin";
+    private static String IP = "localhost", PUERTO ="5432", BD = "VENTAS" , USER = "postgres" , PASS = "admin";
 
 
     public ConexionBD(){
@@ -51,5 +51,8 @@ public class ConexionBD {
         }catch (SQLException ex){
             Logger.getLogger(ConexionBD.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+    public Connection getConexion() {
+        return conexion;
     }
 }

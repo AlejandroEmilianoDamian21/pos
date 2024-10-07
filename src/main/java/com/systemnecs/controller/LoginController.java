@@ -13,6 +13,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.fxml.Initializable;
@@ -81,7 +82,8 @@ public class LoginController implements Initializable {
             BorderPane borderPane = loader.load();
             Stage stage = new Stage();
             stage.setScene(new Scene(borderPane));
-            stage.setTitle(Sesion.getUsuario(null).getNombre());
+            stage.setTitle("Dashboard"+ " - "+ "Usuario:"+Sesion.getUsuario(null).getNombre());
+            stage.getIcons().add(new Image(this.getClass().getResourceAsStream("/images/dashboard.png")));
             stage.setMaximized(true);
             com.systemnecs.util.Metodos.closeEffect(root);
             stage.show();
