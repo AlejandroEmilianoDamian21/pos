@@ -9,8 +9,12 @@ public class ConexionBD {
     private Connection conexion;
     private Statement statement;
 
+    //Tiki-PC
+    private static String IP = "localhost", PUERTO ="5432", BD = "ventas" , USER = "postgres" , PASS = "admin";
 
-    private static String IP = "localhost", PUERTO ="5432", BD = "VENTAS" , USER = "postgres" , PASS = "admin";
+    //Digicom-PC
+    //private static String IP = "localhost", PUERTO ="5432", BD = "VENTAS" , USER = "postgres" , PASS = "admin";
+
 
     public ConexionBD(){
 
