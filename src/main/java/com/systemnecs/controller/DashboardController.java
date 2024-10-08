@@ -10,11 +10,15 @@ import javafx.scene.Scene;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
+import javafx.scene.effect.GaussianBlur;
 import javafx.scene.image.Image;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
+import javafx.stage.WindowEvent;
 
 import java.io.IOException;
 import java.net.URL;
@@ -73,13 +77,32 @@ public class DashboardController implements Initializable {
     }
 
     @FXML
-    void mostrarTablaProductos(ActionEvent event) {
-
+    void mostrarTablaProductos(ActionEvent event) throws IOException {
+        root.setEffect(new GaussianBlur(7.0));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/RegistrarProducto.fxml"));
+        AnchorPane anchorPane = loader.load();
+        Scene scene = new Scene(anchorPane);
+        Stage stage = new Stage();
+        stage.setTitle("Nuevo Cliente");
+        stage.getIcons().add(new Image(this.getClass().getResourceAsStream("/images/productos.png")));
+        stage.setScene(scene);
+        stage.initOwner(root.getScene().getWindow());
+        stage.initModality(Modality.WINDOW_MODAL);
+        stage.initStyle(StageStyle.DECORATED);
+        stage.setResizable(false);
+        stage.setOnCloseRequest((WindowEvent e) -> {
+            root.setEffect(null);
+        });
+        stage.setOnHidden((WindowEvent e) -> {
+            root.setEffect(null);
+        });
+        stage.showAndWait();
     }
 
     @FXML
     void nuevoCliente(ActionEvent event) throws IOException {
         try {
+            root.setEffect(new GaussianBlur(7.0));
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/RegistrarCliente.fxml"));
             VBox vBox = loader.load();
             Scene scene = new Scene(vBox);
@@ -89,8 +112,14 @@ public class DashboardController implements Initializable {
             stage.setScene(scene);
             stage.initOwner(root.getScene().getWindow());
             stage.initModality(Modality.WINDOW_MODAL);
+            stage.initStyle(StageStyle.DECORATED);
             stage.setResizable(false);
-            stage.setIconified(false);
+            stage.setOnCloseRequest((WindowEvent e) -> {
+                root.setEffect(null);
+            });
+            stage.setOnHidden((WindowEvent e) -> {
+                root.setEffect(null);
+            });
             stage.showAndWait();
         }catch (IOException e){
             e.printStackTrace();
