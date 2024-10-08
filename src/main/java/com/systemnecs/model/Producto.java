@@ -2,6 +2,7 @@ package com.systemnecs.model;
 
 import javafx.beans.property.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public class Producto {
@@ -17,7 +18,7 @@ public class Producto {
     private final StringProperty estado = new SimpleStringProperty();
     private final ObjectProperty<LocalDateTime> fechaderegistro = new SimpleObjectProperty<>();
     private final DoubleProperty precio = new SimpleDoubleProperty();
-    private final ObjectProperty<LocalDateTime> fechadevencimiento = new SimpleObjectProperty<>();
+    private final ObjectProperty<LocalDate> fechavencimiento = new SimpleObjectProperty<>();
 
     public int getIdproducto() {
         return idproducto.get();
@@ -151,15 +152,15 @@ public class Producto {
         this.precio.set(precio);
     }
 
-    public LocalDateTime getFechadevencimiento() {
-        return fechadevencimiento.get();
+    public LocalDate getFechavencimiento() {
+        return fechavencimiento.get();
     }
 
-    public ObjectProperty<LocalDateTime> fechadevencimientoProperty() {
-        return fechadevencimiento;
+    public ObjectProperty<LocalDate> fechavencimientoProperty() {
+        return fechavencimiento;
     }
 
-    public void setFechadevencimiento(LocalDateTime fechadevencimiento) {
-        this.fechadevencimiento.set(fechadevencimiento);
+    public void setFechavencimiento(LocalDate fechavencimiento) {
+        this.fechavencimiento.set(fechavencimiento);
     }
 }

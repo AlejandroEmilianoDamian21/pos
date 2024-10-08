@@ -10,6 +10,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.Tab;
 import javafx.scene.effect.GaussianBlur;
 import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
@@ -62,6 +63,8 @@ public class DashboardController implements Initializable {
     @FXML
     private JFXTabPane tabPane;
 
+    private Tab tabProductos;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
@@ -78,25 +81,16 @@ public class DashboardController implements Initializable {
 
     @FXML
     void mostrarTablaProductos(ActionEvent event) throws IOException {
-        root.setEffect(new GaussianBlur(7.0));
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/RegistrarProducto.fxml"));
-        AnchorPane anchorPane = loader.load();
-        Scene scene = new Scene(anchorPane);
-        Stage stage = new Stage();
-        stage.setTitle("Nuevo Cliente");
-        stage.getIcons().add(new Image(this.getClass().getResourceAsStream("/images/productos.png")));
-        stage.setScene(scene);
-        stage.initOwner(root.getScene().getWindow());
-        stage.initModality(Modality.WINDOW_MODAL);
-        stage.initStyle(StageStyle.DECORATED);
-        stage.setResizable(false);
-        stage.setOnCloseRequest((WindowEvent e) -> {
-            root.setEffect(null);
-        });
-        stage.setOnHidden((WindowEvent e) -> {
-            root.setEffect(null);
-        });
-        stage.showAndWait();
+        if (tabProductos == null) {
+            AnchorPane anchorPane = FXMLLoader.load(getClass().getResource("/fxml/Producto.fxml"));
+            tabProductos = new Tab("PRODUCTOS", anchorPane);
+            tabProductos.setClosable(true);
+            tabProductos.setOnClosed(event1 -> {
+                tabProductos = null;
+            });
+            tabPane.getTabs().add(tabProductos);
+        }
+        tabPane.getSelectionModel().select(tabProductos);
     }
 
     @FXML
