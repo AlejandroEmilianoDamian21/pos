@@ -5,6 +5,7 @@ import com.systemnecs.model.Producto;
 import com.systemnecs.util.ConexionBD;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -12,6 +13,8 @@ import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTextField;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
+import javafx.scene.control.ProgressIndicator;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -28,6 +31,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.ResourceBundle;
 
 public class ProductoController implements Initializable {
@@ -75,6 +79,9 @@ public class ProductoController implements Initializable {
     private ConexionBD conexionBD = new ConexionBD();
     private ProductoDAO productoDAO;
 
+    private Stage stageProducto;
+    private RegistrarProductoController registrarProductoController;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
@@ -86,8 +93,21 @@ public class ProductoController implements Initializable {
 
         colStockMinimo.setCellValueFactory(new PropertyValueFactory<>("stockminimo"));
 
-        colPrecio.setCellValueFactory(new PropertyValueFactory<>("precio"));
+        colPrecio.setCellValueFactory( new PropertyValueFactory<>("precio"));
 
+        /*colPrecio.setCellFactory(column -> new TableCell<Producto, Double>() {
+            @Override
+            protected void updateItem(Double precio, boolean empty) {
+                super.updateItem(precio, empty);
+                if (empty || precio == null) {
+                    setText(null);
+                } else {
+                    // Agregar el símbolo de pesos y formatear el precio
+                    setText(String.format("$%.2f", precio));
+                }
+            }
+        });
+        */
         colFechaVencimiento.setCellValueFactory(new PropertyValueFactory<>("fechavencimiento"));
 
         tablaProductos.setItems(listaProductos);
@@ -110,36 +130,67 @@ public class ProductoController implements Initializable {
 
     @FXML
     void listarProductos(ActionEvent event) {
+
         conexionBD.conectar();
         productoDAO = new ProductoDAO(conexionBD);
-        try {
-            listaProductos.setAll(productoDAO.getProductos());
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+
+        Task<List<Producto>> listTask = new Task<List<Producto>>() {
+            @Override
+            protected List<Producto> call() throws Exception {
+                conexionBD.conectar();
+                productoDAO = new ProductoDAO(conexionBD);
+                return productoDAO.getProductos();
+            }
+        };
+
+        listTask.setOnFailed(event1 -> {
+            conexionBD.CERRAR();
+            tablaProductos.setPlaceholder(null);
+        });
+
+        listTask.setOnSucceeded(event1 -> {
+            tablaProductos.setPlaceholder(null);
+            conexionBD.CERRAR();
+            listaProductos.setAll(listTask.getValue());
+            tablaProductos.getColumns().forEach(column -> {
+                com.systemnecs.util.Metodos.changeSizeOnColumn(column, tablaProductos, -1);
+            });
+        });
+
+        ProgressIndicator progressIndicator = new ProgressIndicator();
+        progressIndicator.setMinSize(100, 100);   // Tamaño mínimo
+        progressIndicator.setPrefSize(150, 150);  // Tamaño preferido
+        progressIndicator.setMaxSize(150, 150);   // Tamaño máximo
+        tablaProductos.setPlaceholder(progressIndicator);
+
+        Thread hilo = new Thread(listTask);
+        hilo.start();
     }
 
     @FXML
     void nuevoProducto(ActionEvent event) throws IOException {
-        root.setEffect(new GaussianBlur(7.0));
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/RegistrarProducto.fxml"));
         AnchorPane anchorPane = loader.load();
+        registrarProductoController = loader.getController();
         Scene scene = new Scene(anchorPane);
-        Stage stage = new Stage();
-        stage.setTitle("Nuevo Producto");
-        stage.getIcons().add(new Image(this.getClass().getResourceAsStream("/images/productos.png")));
-        stage.setScene(scene);
-        stage.initOwner(root.getScene().getWindow());
-        stage.initModality(Modality.WINDOW_MODAL);
-        stage.initStyle(StageStyle.DECORATED);
-        stage.setResizable(false);
-        stage.setOnCloseRequest((WindowEvent e) -> {
+        stageProducto = new Stage();
+        stageProducto.setTitle("Nuevo Producto");
+        stageProducto.getIcons().add(new Image(this.getClass().getResourceAsStream("/images/productos.png")));
+        stageProducto.setScene(scene);
+        stageProducto.initOwner(root.getScene().getWindow());
+        stageProducto.initModality(Modality.WINDOW_MODAL);
+        stageProducto.initStyle(StageStyle.DECORATED);
+        stageProducto.setResizable(false);
+        stageProducto.setOnCloseRequest((WindowEvent e) -> {
             root.setEffect(null);
         });
-        stage.setOnHidden((WindowEvent e) -> {
+        stageProducto.setOnHidden((WindowEvent e) -> {
             root.setEffect(null);
         });
-        stage.showAndWait();
+        stageProducto.showAndWait();
+        listarProductos(null);
+        root.setEffect(new GaussianBlur(7.0));
+
     }
 
 }
