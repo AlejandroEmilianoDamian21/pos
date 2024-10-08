@@ -49,8 +49,6 @@ public class LoginController implements Initializable {
     private UsuarioDAO usuarioDAO;
 
     public void initialize(URL location, ResourceBundle resources) {
-        new RollIn(root).play();
-
     }
 
     @FXML
