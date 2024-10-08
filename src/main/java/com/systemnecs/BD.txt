@@ -17,12 +17,30 @@ ALTER TABLE IF EXISTS public.usuario
     OWNER to postgres;
 
 
-    create table public.cliente (
-    	idcliente serial not null,
-    	nombrecliente text null,
-    	apellidocliente text null,
-    	direccioncliente text null,
-    	telefonocliente text null,
-    	numerodocumento text null,
-    	constraint cliente_pkey primary key (idcliente)
-    );
+CREATE TABLE public.cliente (
+	idcliente serial4 NOT NULL,
+	nombrecliente text NULL,
+	apellidocliente text NULL,
+	direccioncliente text NULL,
+	telefonocliente text NULL,
+	numerodocumento text NULL,
+	CONSTRAINT cliente_pkey PRIMARY KEY (idcliente),
+	CONSTRAINT cliente_unique UNIQUE (numerodocumento)
+);
+
+CREATE TABLE public.producto (
+	idproducto serial4 NOT NULL,
+	codigodebarras text NULL,
+	referencia text NULL,
+	nombreproducto text NULL,
+	stock int4 NULL,
+	stockminimo int4 NULL,
+	descripcion text NULL,
+	estado text NULL,
+	fecharegistro timestamptz NULL,
+	precio int4 NULL,
+	fechavencimiento date NULL,
+	imagen bytea NULL,
+	CONSTRAINT producto_pkey PRIMARY KEY (idproducto),
+	CONSTRAINT producto_unique UNIQUE (codigodebarras)
+);
