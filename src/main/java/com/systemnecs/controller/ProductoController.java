@@ -187,9 +187,9 @@ public class ProductoController implements Initializable {
         stageProducto.setOnHidden((WindowEvent e) -> {
             root.setEffect(null);
         });
+        root.setEffect(new GaussianBlur(7.0));
         stageProducto.showAndWait();
         listarProductos(null);
-        root.setEffect(new GaussianBlur(7.0));
 
     }
 

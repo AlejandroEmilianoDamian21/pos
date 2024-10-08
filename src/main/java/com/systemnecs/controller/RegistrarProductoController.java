@@ -31,6 +31,7 @@ import java.io.FileNotFoundException;
 
 import java.awt.image.BufferedImage;
 import java.net.URL;
+import java.sql.SQLException;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.ResourceBundle;
@@ -241,6 +242,27 @@ public class RegistrarProductoController implements Initializable {
         p.setFechavencimiento(cjfechavencimiento.getValue());
         p.setImagen(com.systemnecs.util.Metodos.ImageToByte(imageView.getImage()));
 
+        conexionBD.conectar();
+        productoDAO = new ProductoDAO(conexionBD);
+        try {
+            int guardar = productoDAO.guardar(producto);
+            if ( guardar > 0 ){
+                setSTATUS(true);
+                com.systemnecs.util.Metodos.closeEffect(root);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    public Producto getProducto() {
+        return producto;
+    }
 
+    public boolean isSTATUS() {
+        return STATUS;
+    }
+
+    public void setSTATUS(boolean STATUS) {
+        this.STATUS = STATUS;
     }
 }
