@@ -19,6 +19,7 @@ public class Producto {
     private final ObjectProperty<LocalDateTime> fechaderegistro = new SimpleObjectProperty<>();
     private final DoubleProperty precio = new SimpleDoubleProperty();
     private final ObjectProperty<LocalDate> fechavencimiento = new SimpleObjectProperty<>();
+    private final ObjectProperty<LocalDateTime> fecharegistroactualizado = new SimpleObjectProperty<>();
 
     public int getIdproducto() {
         return idproducto.get();
@@ -162,5 +163,17 @@ public class Producto {
 
     public void setFechavencimiento(LocalDate fechavencimiento) {
         this.fechavencimiento.set(fechavencimiento);
+    }
+
+    public LocalDateTime getFecharegistroactualizado() {
+        return fecharegistroactualizado.get();
+    }
+
+    public ObjectProperty<LocalDateTime> fecharegistroactualizadoProperty() {
+        return fecharegistroactualizado;
+    }
+
+    public void setFecharegistroactualizado(LocalDateTime fecharegistroactualizado) {
+        this.fecharegistroactualizado.set(fecharegistroactualizado);
     }
 }
