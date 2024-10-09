@@ -12,6 +12,7 @@ import javafx.fxml.Initializable;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTextField;
 import javafx.fxml.FXML;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TableCell;
@@ -31,6 +32,8 @@ import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.time.Period;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -63,10 +66,10 @@ public class ProductoController implements Initializable {
     private TableColumn<Producto, String> colCodigo;
 
     @FXML
-    private TableColumn<Producto, Integer> colStock;
+    private TableColumn<Producto, Double> colStock;
 
     @FXML
-    private TableColumn<Producto, Integer> colStockMinimo;
+    private TableColumn<Producto, Double> colStockMinimo;
 
     @FXML
     private TableColumn<Producto, Double> colPrecio;
@@ -90,12 +93,34 @@ public class ProductoController implements Initializable {
         colCodigo.setCellValueFactory(param -> param.getValue().codigodebarrasProperty());
 
         colStock.setCellValueFactory(new PropertyValueFactory<>("stock"));
-
+        colStock.setCellFactory(param -> {
+            return new TableCell<Producto, Double>(){
+                @Override
+                protected void updateItem(Double value, boolean empty) {
+                    super.updateItem(value, empty);
+                    if (value == null || empty) {
+                        setText(null);
+                        setStyle(null);
+                    } else {
+                        setAlignment(Pos.CENTER);
+                        setText("" +value);
+                        Producto producto = getTableView().getItems().get(getIndex());
+                        if(value > producto.getStockminimo()){
+                            setStyle("-fx-background-color: #4CAF50; fx-font-weight: bold; -fx-text-fill: white; ");
+                        }else if(value > 1 && value <= getTableView().getItems().get(getIndex()).getStockminimo() ){
+                            setStyle("-fx-background-color: #FFFF00; fx-font-weight: bold; -fx-text-fill: black; ");
+                        }else if(value < 1){
+                            setStyle("-fx-background-color: #F44336; fx-font-weight: bold; -fx-text-fill: white; ");
+                        }
+                    }
+                }
+            };
+        });
         colStockMinimo.setCellValueFactory(new PropertyValueFactory<>("stockminimo"));
 
         colPrecio.setCellValueFactory( new PropertyValueFactory<>("precio"));
 
-        /*colPrecio.setCellFactory(column -> new TableCell<Producto, Double>() {
+        colPrecio.setCellFactory(column -> new TableCell<Producto, Double>() {
             @Override
             protected void updateItem(Double precio, boolean empty) {
                 super.updateItem(precio, empty);
@@ -106,10 +131,33 @@ public class ProductoController implements Initializable {
                     setText(String.format("$%.2f", precio));
                 }
             }
-        });
-        */
-        colFechaVencimiento.setCellValueFactory(new PropertyValueFactory<>("fechavencimiento"));
 
+        });
+
+        colFechaVencimiento.setCellValueFactory(new PropertyValueFactory<>("fechavencimiento"));
+        colFechaVencimiento.setCellFactory(param -> {
+            return new TableCell<Producto, LocalDate>(){
+                @Override
+                protected void updateItem(LocalDate value, boolean empty) {
+                    super.updateItem(value, empty);
+                    if(!isEmpty() || value != null){
+                        setText(DateTimeFormatter.ofPattern("EEEE dd MMM yyyy").format(value));
+                        if (Period.between(LocalDate.now(),value).isNegative() || Period.between(LocalDate.now(),value).isZero()){
+                            setStyle("-fx-background-color: #F44336; fx-font-weight: bold; -fx-text-fill: white; ");
+                        }else if (LocalDate.now().plusDays(5).isBefore(value)) {
+                            setStyle("-fx-background-color: #4CAF50; fx-font-weight: bold; -fx-text-fill: white;");
+                        }else if ((LocalDate.now().plusDays(5).isBefore(value) || LocalDate.now().plusDays(5).equals(value)) || (value.isBefore(LocalDate.now().plusDays(5)) && value.isAfter(LocalDate.now()))) {
+                            setStyle("-fx-background-color: #FFFF00; fx-font-weight: bold;");
+                        }
+                    }else{
+                        setStyle(null);
+                        setText(null);
+                    }
+                }
+            };
+        });
+
+        listarProductos(null);
         tablaProductos.setItems(listaProductos);
     }
 
@@ -130,10 +178,6 @@ public class ProductoController implements Initializable {
 
     @FXML
     void listarProductos(ActionEvent event) {
-
-        conexionBD.conectar();
-        productoDAO = new ProductoDAO(conexionBD);
-
         Task<List<Producto>> listTask = new Task<List<Producto>>() {
             @Override
             protected List<Producto> call() throws Exception {
@@ -144,10 +188,10 @@ public class ProductoController implements Initializable {
         };
 
         listTask.setOnFailed(event1 -> {
+            System.out.println("Error a listar productos");
             conexionBD.CERRAR();
             tablaProductos.setPlaceholder(null);
         });
-
         listTask.setOnSucceeded(event1 -> {
             tablaProductos.setPlaceholder(null);
             conexionBD.CERRAR();
@@ -158,9 +202,6 @@ public class ProductoController implements Initializable {
         });
 
         ProgressIndicator progressIndicator = new ProgressIndicator();
-        progressIndicator.setMinSize(100, 100);   // Tamaño mínimo
-        progressIndicator.setPrefSize(150, 150);  // Tamaño preferido
-        progressIndicator.setMaxSize(150, 150);   // Tamaño máximo
         tablaProductos.setPlaceholder(progressIndicator);
 
         Thread hilo = new Thread(listTask);

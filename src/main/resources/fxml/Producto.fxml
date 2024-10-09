@@ -35,14 +35,14 @@
                                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                     </VBox.margin>
                                 </JFXTextField>
-                                <TableView fx:id="tablaProductos" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
+                                <TableView fx:id="tablaProductos" prefHeight="200.0" prefWidth="200.0" style="-fx-font-size: 14; -fx-alignment: center;" VBox.vgrow="ALWAYS">
                                     <columns>
-                                        <TableColumn fx:id="colNombre" prefWidth="150.0" text="NOMBRE" />
-                                        <TableColumn fx:id="colCodigo" prefWidth="150.0" text="CODIGO" />
-                                        <TableColumn fx:id="colStock" prefWidth="75.0" text="STOCK" />
-                                        <TableColumn fx:id="colStockMinimo" prefWidth="105.0" text="STOCK MINIMO" />
-                                        <TableColumn fx:id="colPrecio" minWidth="0.0" prefWidth="142.0" text="PRECIO" />
-                                        <TableColumn fx:id="colFechaVencimiento" prefWidth="189.0" text="FECHA VENCIMIENTO" />
+                                        <TableColumn fx:id="colNombre" prefWidth="150.0" style="-fx-alignment: center;" text="NOMBRE" />
+                                        <TableColumn fx:id="colCodigo" prefWidth="150.0" style="-fx-alignment: center;" text="CODIGO" />
+                                        <TableColumn fx:id="colStock" prefWidth="75.0" style="-fx-alignment: center;" text="STOCK" />
+                                        <TableColumn fx:id="colStockMinimo" prefWidth="105.0" style="-fx-alignment: center;" text="STOCK MINIMO" />
+                                        <TableColumn fx:id="colPrecio" minWidth="0.0" prefWidth="142.0" style="-fx-alignment: center;" text="PRECIO" />
+                                        <TableColumn fx:id="colFechaVencimiento" prefWidth="200.0" style="-fx-alignment: center;" text="FECHA VENCIMIENTO" />
                                     </columns>
                                 </TableView>
                             </children>
