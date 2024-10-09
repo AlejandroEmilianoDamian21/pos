@@ -28,19 +28,26 @@ CREATE TABLE public.cliente (
 	CONSTRAINT cliente_unique UNIQUE (numerodocumento)
 );
 
+-- public.producto definition
+
+-- Drop table
+
+-- DROP TABLE public.producto;
+
 CREATE TABLE public.producto (
 	idproducto serial4 NOT NULL,
 	codigodebarras text NULL,
 	referencia text NULL,
 	nombreproducto text NULL,
-	stock int4 NULL,
-	stockminimo int4 NULL,
+	stock float8 NULL,
+	stockminimo float8 NULL,
 	descripcion text NULL,
 	estado text NULL,
 	fecharegistro timestamptz NULL,
-	precio int4 NULL,
+	precio float8 NULL,
 	fechavencimiento date NULL,
 	imagen bytea NULL,
+	fecharegistroactualizado timestamptz NULL,
 	CONSTRAINT producto_pkey PRIMARY KEY (idproducto),
 	CONSTRAINT producto_unique UNIQUE (codigodebarras)
 );
