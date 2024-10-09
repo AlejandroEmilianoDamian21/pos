@@ -8,6 +8,7 @@ import com.jfoenix.controls.JFXTextField;
 import com.systemnecs.dao.ProductoDAO;
 import com.systemnecs.model.Producto;
 import com.systemnecs.util.ConexionBD;
+import com.systemnecs.util.Metodos;
 import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -25,16 +26,20 @@ import javafx.scene.layout.AnchorPane;
 import javafx.fxml.Initializable;
 import javafx.util.StringConverter;
 import javafx.stage.FileChooser;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
+import org.controlsfx.control.Notifications;
+
+import javax.imageio.ImageIO;
+import java.io.*;
 
 import java.awt.image.BufferedImage;
 import java.net.URL;
 import java.sql.SQLException;
 import java.text.NumberFormat;
 import java.text.ParseException;
+import java.util.Locale;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class RegistrarProductoController implements Initializable {
     @FXML
@@ -114,6 +119,7 @@ public class RegistrarProductoController implements Initializable {
 
     @FXML
     void abrirCamara(ActionEvent event) {
+
         if (Webcam.getWebcams().size() < 1) {
             Alert a = new Alert(Alert.AlertType.INFORMATION, "NO HAY CAMARAS DISPONIBLES", ButtonType.OK);
             a.showAndWait();
@@ -167,7 +173,7 @@ public class RegistrarProductoController implements Initializable {
 
     @FXML
     void buscarImagen(ActionEvent event) {
-        // Crear un FileChooser
+        /**/ // Crear un FileChooser
         FileChooser fileChooser = new FileChooser();
 
         // Filtro para permitir solo la selección de archivos de imagen
@@ -196,51 +202,41 @@ public class RegistrarProductoController implements Initializable {
             }
         }
     }
-
+    /**/
     @FXML
     void guardar(ActionEvent event) {
-        if(cjnombre.getText().isEmpty()){
+
+        if (cjnombre.getText().isEmpty()) {
             new Tada(cjnombre).play();
-            org.controlsfx.control.Notifications.create()
-                    .title("Aviso")
-                    .text("Ingrese el nombre del p")
-                    .position(Pos.CENTER)
-                    .showWarning();
+            org.controlsfx.control.Notifications.create().title("Aviso").text("Ingrese el nombre del p").position(Pos.CENTER).showWarning();
             return;
         }
-
         double precio = 0;
         try {
             precio = (NumberFormat.getCurrencyInstance().parse((cjprecio.getText())).doubleValue());
-        }catch (ParseException ex){
+        } catch (ParseException ex) {
             new Tada(cjprecio).play();
-            org.controlsfx.control.Notifications.create()
-                    .title("Aviso")
-                    .text("Precio no valido\n" + ex.getMessage())
-                    .position(Pos.CENTER)
-                    .showError();
+            org.controlsfx.control.Notifications.create().title("Aviso").text("Precio no valido\n" + ex.getMessage()).position(Pos.CENTER).showError();
             return;
         }
-
-        if (cjfechavencimiento.getValue() == null){
+        if (cjfechavencimiento.getValue() == null) {
             new Tada(cjfechavencimiento).play();
-            org.controlsfx.control.Notifications.create()
-                    .title("Aviso")
-                    .text("Seleccione una fecha de vencimiento")
-                    .position(Pos.CENTER)
-                    .showWarning();
+            org.controlsfx.control.Notifications.create().title("Aviso").text("Seleccione una fecha de vencimiento").position(Pos.CENTER).showWarning();
             return;
         }
 
-        Producto p = new Producto();
-        p.setNombreproducto(cjnombre.getText().trim());
-        p.setCodigodebarras(cjcodigo.getText().trim());
-        p.setReferencia(cjreferencia.getText().trim());
-        p.setStock(Double.parseDouble(cjstock.getText()));
-        p.setStockminimo(Double.parseDouble(cjstockminimo.getText()));
-        p.setPrecio(precio);
-        p.setFechavencimiento(cjfechavencimiento.getValue());
-        p.setImagen(com.systemnecs.util.Metodos.ImageToByte(imageView.getImage()));
+        if (getProducto() == null) {
+            this.producto = new Producto();
+        }
+
+        producto.setNombreproducto(cjnombre.getText().trim());
+        producto.setCodigodebarras(cjcodigo.getText().trim());
+        producto.setReferencia(cjreferencia.getText().trim());
+        producto.setStock(Double.parseDouble(cjstock.getText()));
+        producto.setStockminimo(Double.parseDouble(cjstockminimo.getText()));
+        producto.setPrecio(precio);
+        producto.setFechavencimiento(cjfechavencimiento.getValue());
+        producto.setImagen(com.systemnecs.util.Metodos.ImageToByte(imageView.getImage()));
 
         conexionBD.conectar();
         productoDAO = new ProductoDAO(conexionBD);
@@ -253,6 +249,27 @@ public class RegistrarProductoController implements Initializable {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
+    }
+
+    public void setProducto(Producto producto) {
+        this.producto = producto;
+
+        cjnombre.setText(producto.getNombreproducto().trim());
+        cjcodigo.setText(producto.getCodigodebarras());
+        cjreferencia.setText(producto.getReferencia());
+        cjstock.setText(""+ producto.getStock());
+        cjstockminimo.setText(""+ producto.getStockminimo());
+        cjprecio.setText((NumberFormat.getCurrencyInstance().format(producto.getPrecio())));
+        cjfechavencimiento.setValue(producto.getFechavencimiento());
+        try {
+            if (producto.getImagen() != null) {
+                imageView.setImage(SwingFXUtils.toFXImage(ImageIO.read(new ByteArrayInputStream(producto.getImagen())), null));
+            }
+        } catch (IOException ex) {
+            Logger.getLogger(RegistrarProductoController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
     }
     public Producto getProducto() {
         return producto;
