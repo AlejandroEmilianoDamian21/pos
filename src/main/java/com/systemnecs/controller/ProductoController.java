@@ -169,7 +169,10 @@ public class ProductoController implements Initializable {
 
     @FXML
     void borrarProducto(ActionEvent event) {
-
+        if(objProducto.get()== null){
+            com.systemnecs.util.Metodos.rotarError(tablaProductos);
+            return;
+        }
     }
 
     @FXML
