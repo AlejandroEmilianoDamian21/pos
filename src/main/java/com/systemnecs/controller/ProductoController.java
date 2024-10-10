@@ -3,6 +3,8 @@ package com.systemnecs.controller;
 import com.systemnecs.dao.ProductoDAO;
 import com.systemnecs.model.Producto;
 import com.systemnecs.util.ConexionBD;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
@@ -14,10 +16,7 @@ import com.jfoenix.controls.JFXTextField;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.ProgressIndicator;
-import javafx.scene.control.TableCell;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.effect.GaussianBlur;
 import javafx.scene.image.Image;
@@ -36,6 +35,8 @@ import java.time.Period;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class ProductoController implements Initializable {
     @FXML
@@ -84,6 +85,9 @@ public class ProductoController implements Initializable {
 
     private Stage stageProducto;
     private RegistrarProductoController registrarProductoController;
+
+
+    private ObjectProperty<Producto> objProducto = new SimpleObjectProperty<>();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -159,6 +163,8 @@ public class ProductoController implements Initializable {
 
         listarProductos(null);
         tablaProductos.setItems(listaProductos);
+
+        objProducto.bind(tablaProductos.getSelectionModel().selectedItemProperty());
     }
 
     @FXML
@@ -172,8 +178,45 @@ public class ProductoController implements Initializable {
     }
 
     @FXML
-    void editarProducto(ActionEvent event) {
+    void editarProducto(ActionEvent event) throws IOException {
+        if(objProducto.get()== null){
+            com.systemnecs.util.Metodos.rotarError(tablaProductos);
+            return;
+        }
+        root.setEffect(new GaussianBlur(7.0));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/RegistrarProducto.fxml"));
+        AnchorPane ap = loader.load();
+        registrarProductoController = loader.getController();
+        Scene scene = new Scene(ap);
+        stageProducto = new Stage();
+        stageProducto.getIcons().add(new Image(this.getClass().getResourceAsStream("/images/productos.png")));
+        stageProducto.setScene(scene);
+        stageProducto.initOwner(root.getScene().getWindow());
+        stageProducto.initModality(Modality.WINDOW_MODAL);
+        stageProducto.initStyle(StageStyle.DECORATED);
+        stageProducto.setResizable(false);
+        stageProducto.setOnCloseRequest((WindowEvent e) -> {
+            root.setEffect(null);
+        });
+        stageProducto.setOnHidden((WindowEvent e) -> {
+            root.setEffect(null);
+        });
 
+        try {
+            this.conexionBD.conectar();
+            productoDAO = new ProductoDAO(conexionBD);
+            registrarProductoController.setProducto(productoDAO.getById(objProducto.get().getIdproducto()));
+        }catch (SQLException ex){
+            Logger.getLogger(ProductoController.class.getName()).log(Level.SEVERE, null, ex);
+            org.controlsfx.control.Notifications.create().title("Aviso").text("Error al intentar buscar el producto\n"+ex.getMessage()).position(Pos.CENTER).showError();
+        }finally {
+            this.conexionBD.CERRAR();
+        }
+        stageProducto.setTitle("Editar Producto");
+        stageProducto.showAndWait();
+        if (registrarProductoController.isSTATUS()) {
+            listarProductos(null);
+        }
     }
 
     @FXML
@@ -233,5 +276,4 @@ public class ProductoController implements Initializable {
         listarProductos(null);
 
     }
-
 }

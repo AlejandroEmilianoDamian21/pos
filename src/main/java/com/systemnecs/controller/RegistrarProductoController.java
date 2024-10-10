@@ -193,6 +193,7 @@ public class RegistrarProductoController implements Initializable {
 
                 // Asignar la imagen seleccionada al ImageView
                 imageView.setImage(image);
+                System.out.println("Imagen cargada correctamente en el ImageView.");
 
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
@@ -236,8 +237,12 @@ public class RegistrarProductoController implements Initializable {
         producto.setStockminimo(Double.parseDouble(cjstockminimo.getText()));
         producto.setPrecio(precio);
         producto.setFechavencimiento(cjfechavencimiento.getValue());
-        producto.setImagen(com.systemnecs.util.Metodos.ImageToByte(imageView.getImage()));
 
+        if (imageView.getImage() != null) {
+            producto.setImagen(com.systemnecs.util.Metodos.ImageToByte(imageView.getImage()));
+        } else {
+            producto.setImagen(null); // Si no hay imagen seleccionada, guarda null
+        }
         conexionBD.conectar();
         productoDAO = new ProductoDAO(conexionBD);
         try {
@@ -249,7 +254,6 @@ public class RegistrarProductoController implements Initializable {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
     }
 
     public void setProducto(Producto producto) {
@@ -265,6 +269,9 @@ public class RegistrarProductoController implements Initializable {
         try {
             if (producto.getImagen() != null) {
                 imageView.setImage(SwingFXUtils.toFXImage(ImageIO.read(new ByteArrayInputStream(producto.getImagen())), null));
+            }
+            else {
+                imageView.setImage(null); // Limpiar el imageView si no hay imagen
             }
         } catch (IOException ex) {
             Logger.getLogger(RegistrarProductoController.class.getName()).log(Level.SEVERE, null, ex);

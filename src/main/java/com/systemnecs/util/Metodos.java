@@ -1,5 +1,7 @@
 package com.systemnecs.util;
 
+import com.systemnecs.model.Producto;
+import javafx.animation.RotateTransition;
 import javafx.animation.ScaleTransition;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
@@ -82,5 +84,20 @@ public class Metodos {
             Logger.getLogger(Metodos.class.getName()).log(Level.SEVERE, null, ex);
         }
         return res;
+    }
+
+    public static void rotarError(TableView<Producto> node){
+        RotateTransition rotate = new RotateTransition(Duration.millis(100), node);
+        rotate.setCycleCount(7);
+        rotate.setAutoReverse(true);
+        rotate.setFromAngle(-5);
+        rotate.setToAngle(5);
+        rotate.setOnFinished(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                node.setRotate(0);
+            }
+        });
+        rotate.play();
     }
 }

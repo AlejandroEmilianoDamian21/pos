@@ -42,14 +42,15 @@ public class ProductoDAO {
 
     public int guardar(Producto pro) throws SQLException {
         String sql ="";
+
         if (pro.getIdproducto() == 0 ){
-        sql = "INSERT INTO producto (";
-        sql += " codigodebarras , referencia , nombreproducto , stock , stockminimo , descripcion , estado , precio , fechavencimiento , imagen, fecharegistro";
-        sql += ") VALUES (";
-        sql += " '"+pro.getCodigodebarras()+"' , '"+pro.getReferencia()+"' , '"+pro.getNombreproducto()+"' , '"+pro.getStock()+"' , ";
-        sql += " '"+pro.getStockminimo()+"' , '"+pro.getDescripcion()+"' , '"+pro.getEstado()+"' , '"+pro.getPrecio()+"' , ";
-        sql += " '"+pro.getFechavencimiento()+"' , ? , NOW() ";
-        sql += ")";
+            sql = "INSERT INTO producto (";
+            sql += " codigodebarras , referencia , nombreproducto , stock , stockminimo , descripcion , estado , precio , fechavencimiento , imagen, fecharegistro";
+            sql += ") VALUES (";
+            sql += " '"+pro.getCodigodebarras()+"' , '"+pro.getReferencia()+"' , '"+pro.getNombreproducto()+"' , '"+pro.getStock()+"' , ";
+            sql += " '"+pro.getStockminimo()+"' , '"+pro.getDescripcion()+"' , '"+pro.getEstado()+"' , '"+pro.getPrecio()+"' , ";
+            sql += " '"+pro.getFechavencimiento()+"' , ? , NOW() ";
+            sql += ")";
         } else {
             sql = "UPDATE producto SET \n"
                     + "	codigodebarras='"+pro.getCodigodebarras()+"', referencia='"+pro.getReferencia()+"', nombreproducto='"+pro.getNombreproducto()+"', \n"
@@ -67,6 +68,26 @@ public class ProductoDAO {
                 rs.close();
         }
         return insert;
+    }
+
+    public Producto getById(int idproducto) throws SQLException {
+        Producto p = null;
+        ResultSet rs = this.conexionBD.CONSULTAR("SELECT * FROM producto WHERE idproducto="+idproducto);
+        if (rs.next()){
+            p = new Producto();
+            p.setIdproducto(idproducto);
+            p.setCodigodebarras(rs.getString("codigodebarras").trim());
+            p.setReferencia(rs.getString("referencia").trim());
+            p.setNombreproducto(rs.getString("nombreproducto").trim());
+            p.setStock(rs.getDouble("stock"));
+            p.setStockminimo(rs.getDouble("stockminimo"));
+            p.setDescripcion(rs.getString("descripcion").trim());
+            p.setImagen(rs.getBytes("imagen"));
+            p.setEstado(rs.getString("estado").trim());
+            p.setPrecio(rs.getDouble("precio"));
+            p.setFechavencimiento(rs.getDate("fechavencimiento").toLocalDate());
+        }
+        return p;
     }
 
 }
