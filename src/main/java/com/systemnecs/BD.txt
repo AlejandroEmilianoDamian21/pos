@@ -51,3 +51,26 @@ CREATE TABLE public.producto (
 	CONSTRAINT producto_pkey PRIMARY KEY (idproducto),
 	CONSTRAINT producto_unique UNIQUE (codigodebarras)
 );
+
+create table public.ventas (
+	idventa serial not null,
+	numerofactura serial not null,
+	fechaventa timestamp not null default now(),
+	idcliente int4 not null,
+	idusuario int4 not null,
+	formadepago text null,
+	constraint venta_pkey primary key (idventa),
+	constraint venta_idcliente_fkey foreign key (idcliente) references cliente(idcliente) on update cascade on delete restrict,
+	constraint venta_idusuario_fkey foreign key (idusuario) references usuario(idusuario) on update cascade on delete restrict
+);
+
+create table public.detalleventa(
+	iddetalleventa serial not null,
+	idventa int4 not null,
+	idproducto int4 not null,
+	precioventa float8 not null,
+	cantidad float8 not null,
+	constraint detalleventa_pkey primary key (iddetalleventa),
+	constraint detalleventa_idventa_fkey foreign key (idventa) references ventas(idventa) on update cascade on delete restrict,
+	constraint detalleventa_idproducto_fkey foreign key (idproducto) references producto(idproducto) on update cascade on delete restrict
+);
