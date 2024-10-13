@@ -40,6 +40,11 @@ public class ProductoDAO {
         return productos;
     }
 
+    public boolean delete(int idproducto ) throws SQLException {
+        String sql = "DELETE FROM producto WHERE idproducto="+idproducto;
+        return conexionBD.GUARDAR(sql);
+    }
+
     public int guardar(Producto pro) throws SQLException {
         String sql ="";
 
