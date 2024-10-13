@@ -29,7 +29,7 @@
                   <DropShadow color="WHITE" />
                </effect>
             </ImageView>
-            <JFXButton fx:id="btnWhatsapp" text="+57 123 456 789" textFill="#cfd0d3">
+            <JFXButton fx:id="btnWhatsapp" text="+54 3863 44 0349" textFill="#cfd0d3">
                <font>
                   <Font size="14.0" />
                </font>
