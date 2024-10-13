@@ -168,10 +168,21 @@ public class ProductoController implements Initializable {
     }
 
     @FXML
-    void borrarProducto(ActionEvent event) {
+    void borrarProducto(ActionEvent event) throws SQLException {
         if(objProducto.get()== null){
             com.systemnecs.util.Metodos.rotarError(tablaProductos);
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Debe seleccionar un producto en la tabla para eliminar", ButtonType.OK);
+            alert.showAndWait();
             return;
+        }
+        Alert a = new Alert(Alert.AlertType.CONFIRMATION, "¿Desea eliminar el producto?", ButtonType.YES, ButtonType.NO);
+        a.setHeaderText(this.objProducto.get().getNombreproducto());
+        if (a.showAndWait().get() == ButtonType.YES){
+            conexionBD.conectar();
+            productoDAO = new ProductoDAO(conexionBD);
+            boolean delete =  productoDAO.delete(objProducto.get().getIdproducto());
+            listarProductos(null);
+            this.conexionBD.CERRAR();
         }
     }
 
@@ -184,6 +195,8 @@ public class ProductoController implements Initializable {
     void editarProducto(ActionEvent event) throws IOException {
         if(objProducto.get()== null){
             com.systemnecs.util.Metodos.rotarError(tablaProductos);
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Debe seleccionar un producto en la tabla para Editar", ButtonType.OK);
+            alert.showAndWait();
             return;
         }
         root.setEffect(new GaussianBlur(7.0));
