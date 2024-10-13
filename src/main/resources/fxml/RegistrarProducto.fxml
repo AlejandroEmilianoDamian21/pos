@@ -3,6 +3,7 @@
 <?import com.jfoenix.controls.JFXButton?>
 <?import com.jfoenix.controls.JFXDatePicker?>
 <?import com.jfoenix.controls.JFXTextField?>
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
@@ -75,11 +76,19 @@
                   <Font name="System Bold" size="14.0" />
                </font></Label>
                 <JFXTextField fx:id="cjstockminimo" maxWidth="-Infinity" prefWidth="100.0" text="0" GridPane.rowIndex="9" />
-                <Label text="Precio por uniadad:" GridPane.halignment="LEFT" GridPane.rowIndex="10" GridPane.valignment="BOTTOM">
+                <Label text="Precio por unidad:" GridPane.halignment="LEFT" GridPane.rowIndex="10" GridPane.valignment="BOTTOM">
                <font>
                   <Font name="System Bold" size="14.0" />
                </font></Label>
-                <JFXTextField fx:id="cjprecio" GridPane.rowIndex="11" />
+            <Label text="\$" GridPane.rowIndex="11">
+               <font>
+                  <Font name="System Bold" size="14.0" />
+               </font>
+            </Label>
+                <JFXTextField fx:id="cjprecio" prefHeight="28.0" prefWidth="200.0" GridPane.rowIndex="11">
+               <GridPane.margin>
+                  <Insets left="10.0" />
+               </GridPane.margin></JFXTextField>
                 <Label text="Fecha vencimiento:" GridPane.halignment="LEFT" GridPane.rowIndex="12" GridPane.valignment="BOTTOM">
                <font>
                   <Font name="System Bold" size="14.0" />

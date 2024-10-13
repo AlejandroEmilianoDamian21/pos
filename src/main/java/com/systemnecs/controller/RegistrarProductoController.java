@@ -92,7 +92,7 @@ public class RegistrarProductoController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        cjprecio.setTextFormatter(new TextFormatter<>(new StringConverter<Double>() {
+        /*cjprecio.setTextFormatter(new TextFormatter<>(new StringConverter<Double>() {
             @Override
             public String toString(Double object) {
                 if (object != null){
@@ -107,14 +107,14 @@ public class RegistrarProductoController implements Initializable {
                     return NumberFormat.getCurrencyInstance().parse(valor).doubleValue();
                 } catch (ParseException e) {
                     try {
-                        return NumberFormat.getCurrencyInstance().parse("$".concat(valor)).doubleValue();
+                        return NumberFormat.getCurrencyInstance().parse(valor).doubleValue();
                     } catch (ParseException ex) {
                         ex.printStackTrace();
                     }
                 }
                 return 0.0;
             }
-        }));
+        }));*/
     }
 
     @FXML
@@ -212,14 +212,18 @@ public class RegistrarProductoController implements Initializable {
             org.controlsfx.control.Notifications.create().title("Aviso").text("Ingrese el nombre del p").position(Pos.CENTER).showWarning();
             return;
         }
-        double precio = 0;
-        try {
-            precio = (NumberFormat.getCurrencyInstance().parse((cjprecio.getText())).doubleValue());
-        } catch (ParseException ex) {
+        if (cjprecio.getText().isEmpty()){
             new Tada(cjprecio).play();
-            org.controlsfx.control.Notifications.create().title("Aviso").text("Precio no valido\n" + ex.getMessage()).position(Pos.CENTER).showError();
+            org.controlsfx.control.Notifications.create().title("Aviso").text("Precio no valido\n" ).position(Pos.CENTER).showError();
             return;
-        }
+        }/*
+        try {
+            precio = (Double.parseDouble(cjprecio.getText()));
+        } catch (precio <= 0) {
+            new Tada(cjprecio).play();
+            org.controlsfx.control.Notifications.create().title("Aviso").text("Precio no valido\n" ).position(Pos.CENTER).showError();
+            return;
+        }*/
         if (cjfechavencimiento.getValue() == null) {
             new Tada(cjfechavencimiento).play();
             org.controlsfx.control.Notifications.create().title("Aviso").text("Seleccione una fecha de vencimiento").position(Pos.CENTER).showWarning();
@@ -235,7 +239,7 @@ public class RegistrarProductoController implements Initializable {
         producto.setReferencia(cjreferencia.getText().trim());
         producto.setStock(Double.parseDouble(cjstock.getText()));
         producto.setStockminimo(Double.parseDouble(cjstockminimo.getText()));
-        producto.setPrecio(precio);
+        producto.setPrecio(Double.parseDouble(cjprecio.getText()));
         producto.setFechavencimiento(cjfechavencimiento.getValue());
 
         if (imageView.getImage() != null) {
