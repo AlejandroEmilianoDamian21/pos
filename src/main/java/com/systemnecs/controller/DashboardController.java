@@ -1,6 +1,7 @@
 package com.systemnecs.controller;
 
-import com.systemnecs.util.Sesion;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -20,9 +21,12 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.stage.WindowEvent;
+import javafx.util.Duration;
 
 import java.io.IOException;
 import java.net.URL;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ResourceBundle;
 
 public class DashboardController implements Initializable {
@@ -65,6 +69,8 @@ public class DashboardController implements Initializable {
 
     private Tab tabProductos;
 
+    private Tab tabRealizarVenta;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
@@ -75,8 +81,30 @@ public class DashboardController implements Initializable {
     }
 
     @FXML
-    void mostraRealizarVenta(ActionEvent event) {
+    void mostraRealizarVenta(ActionEvent event) throws IOException {
+        if (tabRealizarVenta == null){
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/RegistrarVenta.fxml"));
+            VBox vbox = loader.load();
+            RegistrarVentaController rvc = loader.getController();
+            tabRealizarVenta = new Tab();
+            tabRealizarVenta.setText("VENTA: " + LocalDateTime.now().format(DateTimeFormatter.ofPattern("EEE dd MMM hh:mm:ss")));
+            tabRealizarVenta.setContent(vbox);
+            tabRealizarVenta.setClosable(true);
+            tabRealizarVenta.setOnClosed(event1 -> tabRealizarVenta = null);
+             //rvc.getCjCodigoBarras().requestFocus();
+            tabPane.getTabs().add(tabRealizarVenta);
+            tabPane.getSelectionModel().select(tabRealizarVenta);
 
+            // Configurar un Timeline para actualizar el título cada segundo
+            Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(1), e -> {
+                if (tabRealizarVenta != null) {
+                    tabRealizarVenta.setText("VENTA: " + LocalDateTime.now().format(DateTimeFormatter.ofPattern("EEE dd MMM hh:mm:ss")));
+                }
+            }));
+            timeline.setCycleCount(Timeline.INDEFINITE); // Hacer que se ejecute indefinidamente
+            timeline.play(); // Iniciar el Timeline
+        }
+        tabPane.getSelectionModel().select(tabRealizarVenta);
     }
 
     @FXML
