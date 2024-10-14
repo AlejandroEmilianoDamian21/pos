@@ -74,3 +74,12 @@ create table public.detalleventa(
 	constraint detalleventa_idventa_fkey foreign key (idventa) references ventas(idventa) on update cascade on delete restrict,
 	constraint detalleventa_idproducto_fkey foreign key (idproducto) references producto(idproducto) on update cascade on delete restrict
 );
+
+create table public.comercio(
+	idcomercio serial not null,
+	nombre text not null,
+	nit text null,
+	direccion text null,
+	telefono text null,
+	iva int4 null
+);
