@@ -176,7 +176,7 @@ public class ProductoController implements Initializable {
             return;
         }
         Alert a = new Alert(Alert.AlertType.CONFIRMATION, "¿Desea eliminar el producto?", ButtonType.YES, ButtonType.NO);
-        a.setHeaderText(this.objProducto.get().getNombreproducto());
+        a.setHeaderText("Producto: "+this.objProducto.get().getNombreproducto()+"\n"+"Codigo: "+this.objProducto.get().getCodigodebarras());
         if (a.showAndWait().get() == ButtonType.YES){
             conexionBD.conectar();
             productoDAO = new ProductoDAO(conexionBD);

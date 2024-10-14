@@ -53,6 +53,7 @@ public class RegistrarClienteController implements Initializable {
     private Cliente cliente;
     private ConexionBD conexionBD = new ConexionBD();
     private ClienteDAO clienteDAO;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
@@ -78,6 +79,7 @@ public class RegistrarClienteController implements Initializable {
                     .showWarning();
             return;
         }
+
         if(getCliente()== null){
             cliente = new Cliente();
         }
@@ -121,5 +123,6 @@ public class RegistrarClienteController implements Initializable {
     public void setCliente(Cliente cliente) {
         this.cliente = cliente;
     }
+
 }
 

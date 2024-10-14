@@ -95,4 +95,27 @@ public class ProductoDAO {
         return p;
     }
 
+    public List<Producto> getAll() throws SQLException{
+        List<Producto> lista = new ArrayList<>();
+        Producto p = null;
+        ResultSet rs = this.conexionBD.CONSULTAR("SELECT idproducto, codigodebarras, referencia, nombreproducto, stock, stockminimo, descripcion, estado, fecharegistro, precio, fechavencimiento\n" +
+                "	FROM public.producto;");
+        while(rs.next()){
+            p = new Producto();
+            p.setIdproducto(rs.getInt("idproducto"));
+            p.setCodigodebarras(rs.getString("codigodebarras").trim());
+            p.setReferencia(rs.getString("referencia").trim());
+            p.setNombreproducto(rs.getString("nombreproducto").trim());
+            p.setStock(rs.getDouble("stock"));
+            p.setStockminimo(rs.getDouble("stockminimo"));
+            p.setDescripcion(rs.getString("descripcion").trim());
+            p.setEstado(rs.getString("estado").trim());
+            p.setPrecio(rs.getDouble("precio"));
+            p.setFechavencimiento(rs.getDate("fechavencimiento").toLocalDate());
+
+            lista.add(p);
+        }
+        return lista;
+    }
+
 }
