@@ -7,12 +7,15 @@ import com.systemnecs.model.Comercio;
 import com.systemnecs.model.DetalleVenta;
 import com.systemnecs.model.Producto;
 import com.systemnecs.util.ConexionBD;
+import com.systemnecs.util.CurrencyCell;
 import com.systemnecs.util.SearchComboBox;
+import com.systemnecs.util.DoubleCell;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.Initializable;
 
 import com.jfoenix.controls.JFXButton;
@@ -22,6 +25,7 @@ import com.jfoenix.controls.JFXTextField;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
@@ -32,6 +36,8 @@ import javafx.scene.text.Text;
 import java.net.URL;
 import java.sql.SQLException;
 import java.text.NumberFormat;
+import java.util.Locale;
+import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.function.Predicate;
 import java.util.logging.Level;
@@ -46,19 +52,19 @@ public class RegistrarVentaController implements Initializable {
     private JFXTextField cjCodigoBarras;
 
     @FXML
-    private TableView<?> tablaPedidos;
+    private TableView<DetalleVenta> tablaPedidos;
 
     @FXML
-    private TableColumn<?, ?> colProducto;
+    private TableColumn<DetalleVenta, String> colProducto;
 
     @FXML
-    private TableColumn<?, ?> colcantidad;
+    private TableColumn colcantidad;
 
     @FXML
-    private TableColumn<?, ?> colvalor;
+    private TableColumn colvalor;
 
     @FXML
-    private TableColumn<?, ?> coltotal;
+    private TableColumn<DetalleVenta, Double> coltotal;
 
     @FXML
     private JFXButton btnQuitarProducto;
@@ -124,6 +130,45 @@ public class RegistrarVentaController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
+        tablaPedidos.setEditable(true);
+        tablaPedidos.getSelectionModel().setCellSelectionEnabled(true);
+        tablaPedidos.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+        tablaPedidos.setItems(listaPedido);
+        tablaPedidos.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+
+        colProducto.setCellValueFactory(tc -> tc.getValue().getProducto().nombreproductoProperty());
+
+        colcantidad.setCellValueFactory(new PropertyValueFactory<>("cantidad"));
+        colcantidad.setStyle("-fx-alignment: CENTER");
+        colcantidad.setCellFactory(tc -> new DoubleCell<>());
+        colcantidad.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<DetalleVenta, Double>>() {
+            @Override
+            public void handle(TableColumn.CellEditEvent<DetalleVenta, Double> e) {
+                if (!Objects.equals(e.getNewValue(), e.getOldValue())) {
+                    ((DetalleVenta) e.getTableView().getItems().get(e.getTablePosition().getRow())).setCantidad(e.getNewValue());
+                    calcular();
+                    com.systemnecs.util.Metodos.changeSizeOnColumn(coltotal, tablaPedidos, e.getTablePosition().getRow());
+                }
+            }
+        });
+
+        colvalor.setCellValueFactory(new PropertyValueFactory<>("precioventa"));
+        colvalor.setCellFactory(tc -> new CurrencyCell<>());
+        colvalor.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<DetalleVenta, Double>>() {
+            @Override
+            public void handle(TableColumn.CellEditEvent<DetalleVenta, Double> e) {
+                if (!Objects.equals(e.getNewValue(), e.getOldValue())) {
+                    ((DetalleVenta) e.getTableView().getItems().get(e.getTablePosition().getRow())).setPrecioventa(e.getNewValue());
+                    calcular();
+                    com.systemnecs.util.Metodos.changeSizeOnColumn(colvalor, tablaPedidos, e.getTablePosition().getRow());
+                }
+            }
+        });
+
+        coltotal.setCellValueFactory(new PropertyValueFactory<>("total"));
+        coltotal.setCellFactory(tc -> new CurrencyCell<>());
+        coltotal.setEditable(false);
+
         try {
             this.conexionBD.conectar();
             clienteDAO = new ClienteDAO(this.conexionBD);
@@ -152,28 +197,47 @@ public class RegistrarVentaController implements Initializable {
             filtro = new FilteredList(listaProductos, p -> true);
             colProductos.setCellValueFactory(param -> param.getValue().nombreproductoProperty());
             colProductosPrecio.setCellValueFactory(param -> param.getValue().precioProperty().asObject());
-            colProductosPrecio.setCellFactory(column -> new TableCell<Producto, Double>() {
-                @Override
-                protected void updateItem(Double precio, boolean empty) {
-                    super.updateItem(precio, empty);
-                    if (empty || precio == null) {
-                        setText(null);
-                    } else {
-                        // Agregar el símbolo de pesos y formatear el precio
-                        setText(String.format("$%.2f", precio));
-                    }
-                }
-
-            });
         } catch (SQLException ex) {
             org.controlsfx.control.Notifications.create().title("Aviso").text("No se cargaron los productos").position(Pos.CENTER).showWarning();
             Logger.getLogger(RegistrarVentaController.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        } 
+
     }
 
     @FXML
     void buscarCodigo(KeyEvent event) {
+        if (event.getCode() == KeyCode.ENTER && cjCodigoBarras.getText() != null && !cjCodigoBarras.getText().isEmpty()) {
 
+            listaPedido.stream().
+                    filter(p -> p.getProducto().getCodigodebarras().equals(cjCodigoBarras.getText()))
+                    .findFirst().map((t) -> {
+                t.setCantidad((t.getCantidad() + 1));
+                cjCodigoBarras.setText(null);
+                return t;
+            }).orElseGet(() -> {
+                listaProductos.stream()
+                        .filter((p) -> p.getCodigodebarras().contains(cjCodigoBarras.getText()))
+                        .findFirst()
+                        .ifPresent(p -> {
+                            DetalleVenta dv = new DetalleVenta();
+                            dv.setProducto(p);
+                            dv.setCantidad(1);
+                            dv.setPrecioventa(p.getPrecio());
+                            listaPedido.add(dv);
+                            com.systemnecs.util.Metodos.changeSizeOnColumn(colProducto, tablaPedidos, -1);
+                            cjCodigoBarras.setText(null);
+                        });
+                return null;
+            });
+
+            calcular();
+        } else if (event.getCode() == KeyCode.DOWN) {
+            tablaPedidos.requestFocus();
+            tablaPedidos.getFocusModel().focus(0, colcantidad);
+            tablaPedidos.getSelectionModel().select(0, colcantidad);
+        } else if (event.getCode() == KeyCode.RIGHT && cjCodigoBarras.getText() == null) {
+            cjBuscarProducto.requestFocus();
+        }
     }
 
     @FXML
@@ -273,14 +337,6 @@ public class RegistrarVentaController implements Initializable {
         calcular();
     }
 
-    private void calcular() {
-        double suma = listaPedido.stream().mapToDouble(ped -> ped.getCantidad()*ped.getPrecioventa()).sum();
-        //double iva = (suma*this.iva)/100.0;
-        //txtIva.setText(NumberFormat.getCurrencyInstance().format(iva));
-        txtSubtotal.setText(NumberFormat.getCurrencyInstance().format((suma)));
-        //txtTotal.setText(NumberFormat.getCurrencyInstance().format((suma+iva)));
-    }
-
     public void actualizarComboClientes() {
         try {
             this.conexionBD.conectar();
@@ -293,5 +349,15 @@ public class RegistrarVentaController implements Initializable {
             this.conexionBD.CERRAR();
         }
     }
+
+    private void calcular() {
+        double suma = listaPedido.stream().mapToDouble(ped -> ped.getCantidad()*ped.getPrecioventa()).sum();
+        //double iva = (suma*this.iva)/100.0;
+        //txtIva.setText(NumberFormat.getCurrencyInstance(Locale.US).format(iva));
+        txtSubtotal.setText(NumberFormat.getCurrencyInstance(Locale.US).format((suma)));
+        //txtTotal.setText(NumberFormat.getCurrencyInstance(Locale.US).format((suma+iva)));
+    }
+
+
 
 }
