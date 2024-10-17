@@ -36,6 +36,7 @@ import javafx.scene.text.Text;
 import java.net.URL;
 import java.sql.SQLException;
 import java.text.NumberFormat;
+import java.time.LocalDate;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.ResourceBundle;
@@ -82,7 +83,7 @@ public class RegistrarVentaController implements Initializable {
     private JFXDatePicker cjFecha;
 
     @FXML
-    private JFXComboBox<?> comboFormaDePago;
+    private JFXComboBox<String> comboFormaDePago;
 
     @FXML
     private Label lblIva;
@@ -131,6 +132,11 @@ public class RegistrarVentaController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
+        cjFecha.setValue(LocalDate.now());
+
+        comboFormaDePago.getItems().addAll("EFECTIVO", "TARJETA CREDITO", "TARJETA DEBITO");
+        comboFormaDePago.getSelectionModel().selectFirst();
 
         Comercio comercio = Comercio.getInstance(null);
         if (comercio != null) {
@@ -310,12 +316,29 @@ public class RegistrarVentaController implements Initializable {
 
     @FXML
     void restarCantidad(ActionEvent event) {
-
+        if (tablaPedidos.getSelectionModel().getSelectedItem() != null){
+        listaPedido.removeAll(tablaPedidos.getSelectionModel().getSelectedItems().filtered(p -> p.getCantidad()==1));
+        tablaPedidos.getSelectionModel().getSelectedItems().stream().filter(p -> p.getCantidad() > 1).forEach(p ->{
+            p.setCantidad((p.getCantidad()-1));
+        });
+        calcular();
+        }else {
+            Alert a = new Alert(Alert.AlertType.WARNING, "Debe seleccionar un item en la tabla de venta para restar o sumar productos", ButtonType.OK );
+            a.showAndWait();
+        }
     }
 
     @FXML
     void sumarCantidad(ActionEvent event) {
-
+        if (tablaPedidos.getSelectionModel().getSelectedItem() != null) {
+            tablaPedidos.getSelectionModel().getSelectedItems().stream().filter(p -> p.getCantidad() > 1).forEach(p -> {
+                p.setCantidad((p.getCantidad() + 1));
+                calcular();
+            });
+        }else {
+            Alert a = new Alert(Alert.AlertType.WARNING, "Debe seleccionar un item en la tabla de venta para restar o sumar productos", ButtonType.OK );
+            a.showAndWait();
+        }
     }
 
     @FXML

@@ -47,10 +47,14 @@
                         </TableView>
                         <HBox alignment="CENTER_LEFT" prefWidth="200.0">
                             <children>
-                                <JFXButton fx:id="btnQuitarProducto" onAction="#restarCantidad">
-                                </JFXButton>
-                                <JFXButton fx:id="btnAgregarProducto" layoutX="10.0" layoutY="10.0" onAction="#sumarCantidad">
-                                </JFXButton>
+                                <JFXButton fx:id="btnQuitarProducto" onAction="#restarCantidad" text="-">
+                           <font>
+                              <Font name="System Bold" size="14.0" />
+                           </font></JFXButton>
+                                <JFXButton fx:id="btnAgregarProducto" layoutX="10.0" layoutY="10.0" onAction="#sumarCantidad" text="+">
+                           <font>
+                              <Font name="System Bold" size="14.0" />
+                           </font></JFXButton>
                             </children>
                         </HBox>
                     </children>
