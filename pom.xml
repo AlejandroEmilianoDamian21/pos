@@ -50,19 +50,6 @@
 
         </plugins>
     </build>
-    <repositories>
-        <repository>
-            <id>jaspersoft-third-party</id>
-            <url>http://jaspersoft.jfrog.io/jaspersoft/third-party-ce-artifacts/</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </repository>
-    </repositories>
-
     <dependencies>
 
         <dependency>
@@ -78,6 +65,13 @@
             <version>${jasper.version}</version>
         </dependency>
         -->
+        <!-- JasperReports -->
+        <dependency>
+            <groupId>net.sf.jasperreports</groupId>
+            <artifactId>jasperreports</artifactId>
+            <version>${jasper.version}</version>
+        </dependency>
+
         <dependency>
             <groupId>com.jfoenix</groupId>
             <artifactId>jfoenix</artifactId>
