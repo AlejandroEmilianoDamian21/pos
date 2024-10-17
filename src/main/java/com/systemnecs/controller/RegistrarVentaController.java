@@ -125,10 +125,21 @@ public class RegistrarVentaController implements Initializable {
     ObservableList<Producto> listaProductos = FXCollections.observableArrayList();
     ObservableList<DetalleVenta> listaPedido = FXCollections.observableArrayList();
 
-    //private Integer iva = Comercio.getInstance(null).getIva();
+    private Integer iva;
+
+
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
+        Comercio comercio = Comercio.getInstance(null);
+        if (comercio != null) {
+            this.iva = comercio.getIva();
+        } else {
+            // Maneja el caso en que comercio sea null, por ejemplo, asignando un valor predeterminado
+            this.iva = 1;  // Asigna un valor predeterminado si es necesario
+            Logger.getLogger(RegistrarVentaController.class.getName()).log(Level.WARNING, "Comercio es nulo.");
+        }
 
         tablaPedidos.setEditable(true);
         tablaPedidos.getSelectionModel().setCellSelectionEnabled(true);
@@ -196,12 +207,28 @@ public class RegistrarVentaController implements Initializable {
             tablaProductos.setItems(listaProductos);
             filtro = new FilteredList(listaProductos, p -> true);
             colProductos.setCellValueFactory(param -> param.getValue().nombreproductoProperty());
+
             colProductosPrecio.setCellValueFactory(param -> param.getValue().precioProperty().asObject());
+            colProductosPrecio.setCellFactory(tc -> new TableCell<Producto, Double>() {
+                @Override
+                protected void updateItem(Double precio, boolean empty) {
+                    super.updateItem(precio, empty);
+                    if (empty || precio == null) {
+                        setText(null);
+                    } else {
+                        // Formatea el precio con el símbolo de dólar
+                        NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(Locale.US);
+                        setText(currencyFormat.format(precio));
+                    }
+                }
+            });
         } catch (SQLException ex) {
             org.controlsfx.control.Notifications.create().title("Aviso").text("No se cargaron los productos").position(Pos.CENTER).showWarning();
             Logger.getLogger(RegistrarVentaController.class.getName()).log(Level.SEVERE, null, ex);
         } 
 
+        //txtTituloEmpresa.setText(Comercio.getInstance(null).getNombre());
+        lblIva.setText("IVA: ("+this.iva+"%)");
     }
 
     @FXML
@@ -229,7 +256,6 @@ public class RegistrarVentaController implements Initializable {
                         });
                 return null;
             });
-
             calcular();
         } else if (event.getCode() == KeyCode.DOWN) {
             tablaPedidos.requestFocus();
@@ -352,10 +378,10 @@ public class RegistrarVentaController implements Initializable {
 
     private void calcular() {
         double suma = listaPedido.stream().mapToDouble(ped -> ped.getCantidad()*ped.getPrecioventa()).sum();
-        //double iva = (suma*this.iva)/100.0;
-        //txtIva.setText(NumberFormat.getCurrencyInstance(Locale.US).format(iva));
+        double iva = (suma*this.iva)/100.0;
+        txtIva.setText(NumberFormat.getCurrencyInstance(Locale.US).format(iva));
         txtSubtotal.setText(NumberFormat.getCurrencyInstance(Locale.US).format((suma)));
-        //txtTotal.setText(NumberFormat.getCurrencyInstance(Locale.US).format((suma+iva)));
+        txtTotal.setText(NumberFormat.getCurrencyInstance(Locale.US).format((suma+iva)));
     }
 
 

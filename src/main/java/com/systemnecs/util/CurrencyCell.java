@@ -27,7 +27,7 @@ public class CurrencyCell<T, S> extends TableCell<T, Double> {
 
         textField.setOnAction(e -> {
             try {
-                commitEdit(format.parse("$".concat(textField.getText())).doubleValue());
+                commitEdit(format.parse(textField.getText()).doubleValue());
             } catch (ParseException ex) {
                 Logger.getLogger(CurrencyCell.class.getName()).log(Level.SEVERE, null, ex);
             }
