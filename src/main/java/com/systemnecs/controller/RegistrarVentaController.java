@@ -1,21 +1,17 @@
 package com.systemnecs.controller;
 
+import animatefx.animation.Tada;
 import com.systemnecs.dao.ClienteDAO;
 import com.systemnecs.dao.ProductoDAO;
-import com.systemnecs.model.Cliente;
-import com.systemnecs.model.Comercio;
-import com.systemnecs.model.DetalleVenta;
-import com.systemnecs.model.Producto;
-import com.systemnecs.util.ConexionBD;
-import com.systemnecs.util.CurrencyCell;
-import com.systemnecs.util.SearchComboBox;
-import com.systemnecs.util.DoubleCell;
+import com.systemnecs.model.*;
+import com.systemnecs.util.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 
 import com.jfoenix.controls.JFXButton;
@@ -24,15 +20,22 @@ import com.jfoenix.controls.JFXDatePicker;
 import com.jfoenix.controls.JFXTextField;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import org.controlsfx.control.Notifications;
 
+import javax.script.Bindings;
+import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
 import java.text.NumberFormat;
@@ -43,6 +46,8 @@ import java.util.ResourceBundle;
 import java.util.function.Predicate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import static javax.script.Bindings.*;
 
 public class RegistrarVentaController implements Initializable {
 
@@ -126,12 +131,12 @@ public class RegistrarVentaController implements Initializable {
     ObservableList<Producto> listaProductos = FXCollections.observableArrayList();
     ObservableList<DetalleVenta> listaPedido = FXCollections.observableArrayList();
 
-    private Integer iva;
-
-
+    private Integer iva = Comercio.getInstance(null).getIva();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
+        btnPagar.disableProperty().bind(javafx.beans.binding.Bindings.isEmpty(listaPedido));
 
         cjFecha.setValue(LocalDate.now());
 
@@ -164,7 +169,7 @@ public class RegistrarVentaController implements Initializable {
                 if (!Objects.equals(e.getNewValue(), e.getOldValue())) {
                     ((DetalleVenta) e.getTableView().getItems().get(e.getTablePosition().getRow())).setCantidad(e.getNewValue());
                     calcular();
-                    com.systemnecs.util.Metodos.changeSizeOnColumn(coltotal, tablaPedidos, e.getTablePosition().getRow());
+                    Metodos.changeSizeOnColumn(coltotal, tablaPedidos, e.getTablePosition().getRow());
                 }
             }
         });
@@ -177,7 +182,7 @@ public class RegistrarVentaController implements Initializable {
                 if (!Objects.equals(e.getNewValue(), e.getOldValue())) {
                     ((DetalleVenta) e.getTableView().getItems().get(e.getTablePosition().getRow())).setPrecioventa(e.getNewValue());
                     calcular();
-                    com.systemnecs.util.Metodos.changeSizeOnColumn(colvalor, tablaPedidos, e.getTablePosition().getRow());
+                    Metodos.changeSizeOnColumn(colvalor, tablaPedidos, e.getTablePosition().getRow());
                 }
             }
         });
@@ -229,11 +234,11 @@ public class RegistrarVentaController implements Initializable {
                 }
             });
         } catch (SQLException ex) {
-            org.controlsfx.control.Notifications.create().title("Aviso").text("No se cargaron los productos").position(Pos.CENTER).showWarning();
+            Notifications.create().title("Aviso").text("No se cargaron los productos").position(Pos.CENTER).showWarning();
             Logger.getLogger(RegistrarVentaController.class.getName()).log(Level.SEVERE, null, ex);
         } 
 
-        //txtTituloEmpresa.setText(Comercio.getInstance(null).getNombre());
+        txtTituloEmpresa.setText(Comercio.getInstance(null).getNombre());
         lblIva.setText("IVA: ("+this.iva+"%)");
     }
 
@@ -310,8 +315,43 @@ public class RegistrarVentaController implements Initializable {
     }
 
     @FXML
-    void pagar(ActionEvent event) {
+    void pagar(ActionEvent event) throws IOException {
+        if(comboCliente.getSelectionModel().getSelectedItem()== null){
+            new Tada(comboCliente).play();
+            org.controlsfx.control.Notifications.create().title("Aviso").text("Seleccione un cliente").position(Pos.CENTER).showWarning();
+            return;
+        }
 
+        Venta v = new Venta();
+        v.setCliente(comboCliente.getSelectionModel().getSelectedItem());
+        v.setFormadepago(comboFormaDePago.getSelectionModel().getSelectedItem());
+        v.setDetalleventa(listaPedido);
+
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/Pagar.fxml"));
+        VBox vbox = loader.load();
+
+        PagarController controller = loader.getController();
+        //controller.setVenta(v);
+
+        Scene scene = new Scene(vbox);
+        Stage stage = new Stage();
+        stage.setTitle("Confirmar venta");
+        stage.getIcons().add(new Image(this.getClass().getResourceAsStream("/images/payment.png")));
+        stage.setScene(scene);
+        stage.initOwner(root.getScene().getWindow());
+        stage.initModality(Modality.WINDOW_MODAL);
+        stage.setResizable(false);
+        stage.setIconified(false);
+        stage.showAndWait();
+
+        //if (controller.getIdventa > 0){
+            comboCliente.getSelectionModel().clearSelection();
+            listaPedido.clear();
+            cjCodigoBarras.requestFocus();
+            txtSubtotal.setText("$0");
+            txtIva.setText("$0");
+            txtTotal.setText("$0");
+        //}
     }
 
     @FXML

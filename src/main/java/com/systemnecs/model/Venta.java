@@ -1,30 +1,68 @@
 package com.systemnecs.model;
 
-import javafx.beans.binding.Bindings;
-import javafx.beans.binding.NumberBinding;
 import javafx.beans.property.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Venta {
 
     private final IntegerProperty idventa = new SimpleIntegerProperty();
     private Cliente cliente;
     private Usuario usuario;
-    private final ObjectProperty<LocalDateTime> fecharegistro = new SimpleObjectProperty<>();
+    private final ObjectProperty<LocalDateTime> fecha = new SimpleObjectProperty<>();
     private final IntegerProperty numerofactura = new SimpleIntegerProperty();
     private final StringProperty formadepago = new SimpleStringProperty();
 
-    public int getIdventa() {
+    public String getFormadepago() {
+        return formadepago.get();
+    }
+
+    public void setFormadepago(String value) {
+        formadepago.set(value);
+    }
+
+    public StringProperty formadepagoProperty() {
+        return formadepago;
+    }
+
+    private List<DetalleVenta> detalleventa = new ArrayList<>();
+
+    public int getNumerofactura() {
+        return numerofactura.get();
+    }
+
+    public void setNumerofactura(int value) {
+        numerofactura.set(value);
+    }
+
+    public IntegerProperty numerofacturaProperty() {
+        return numerofactura;
+    }
+
+    public LocalDateTime getFecha() {
+        return fecha.get();
+    }
+
+    public void setFecha(LocalDateTime value) {
+        fecha.set(value);
+    }
+
+    public ObjectProperty fechaProperty() {
+        return fecha;
+    }
+
+    private int getIdventa() {
         return idventa.get();
     }
 
-    public IntegerProperty idventaProperty() {
-        return idventa;
+    private void setIdventa(int value) {
+        idventa.set(value);
     }
 
-    public void setIdventa(int idventa) {
-        this.idventa.set(idventa);
+    private IntegerProperty idventaProperty() {
+        return idventa;
     }
 
     public Cliente getCliente() {
@@ -43,39 +81,11 @@ public class Venta {
         this.usuario = usuario;
     }
 
-    public LocalDateTime getFecharegistro() {
-        return fecharegistro.get();
+    public List<DetalleVenta> getDetalleventa() {
+        return detalleventa;
     }
 
-    public ObjectProperty<LocalDateTime> fecharegistroProperty() {
-        return fecharegistro;
-    }
-
-    public void setFecharegistro(LocalDateTime fecharegistro) {
-        this.fecharegistro.set(fecharegistro);
-    }
-
-    public int getNumerofactura() {
-        return numerofactura.get();
-    }
-
-    public IntegerProperty numerofacturaProperty() {
-        return numerofactura;
-    }
-
-    public void setNumerofactura(int numerofactura) {
-        this.numerofactura.set(numerofactura);
-    }
-
-    public String getFormadepago() {
-        return formadepago.get();
-    }
-
-    public StringProperty formadepagoProperty() {
-        return formadepago;
-    }
-
-    public void setFormadepago(String formadepago) {
-        this.formadepago.set(formadepago);
+    public void setDetalleventa(List<DetalleVenta> detalleventa) {
+        this.detalleventa = detalleventa;
     }
 }
