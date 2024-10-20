@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.20.6.final using JasperReports Library version 6.20.6-5c96b6aa8a39ac1dc6b6bea4b81168e16dd39231  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="factura2" language="groovy" pageWidth="164" pageHeight="200" columnWidth="164" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="b73cc9c0-0ccc-49ed-9a8f-347545942acd">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="ventas"/>
+	<style name="DETALLE" backcolor="#26C7FC">
+		<conditionalStyle>
+			<conditionExpression><![CDATA[new Boolean($V(REPORT_COUNT).intVALUE()%2==0)]]></conditionExpression>
+			<style/>
+		</conditionalStyle>
+	</style>
+	<subDataset name="detalleventa" uuid="ea311931-bdd2-4f7c-8919-eb41bfec6c7f">
+		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="ventas"/>
+		<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+		<parameter name="idventa_tabla" class="java.lang.Integer">
+			<defaultValueExpression><![CDATA[$P{idventa_tabla}]]></defaultValueExpression>
+		</parameter>
+		<queryString>
+			<![CDATA[SELECT dv.*, p.nombreproducto
+FROM detalleventa dv
+	INNER JOIN ventas v ON
+	v.idventa = dv.idventa
+	INNER JOIN producto p ON
+	p.idproducto = dv.idproducto
+WHERE
+	v.idventa = $P{idventa_tabla}]]>
+		</queryString>
+		<field name="iddetalleventa" class="java.lang.Integer">
+			<property name="com.jaspersoft.studio.field.name" value="iddetalleventa"/>
+			<property name="com.jaspersoft.studio.field.label" value="iddetalleventa"/>
+			<property name="com.jaspersoft.studio.field.tree.path" value="detalleventa"/>
+		</field>
+		<field name="idventa" class="java.lang.Integer">
+			<property name="com.jaspersoft.studio.field.name" value="idventa"/>
+			<property name="com.jaspersoft.studio.field.label" value="idventa"/>
+			<property name="com.jaspersoft.studio.field.tree.path" value="detalleventa"/>
+		</field>
+		<field name="idproducto" class="java.lang.Integer">
+			<property name="com.jaspersoft.studio.field.name" value="idproducto"/>
+			<property name="com.jaspersoft.studio.field.label" value="idproducto"/>
+			<property name="com.jaspersoft.studio.field.tree.path" value="detalleventa"/>
+		</field>
+		<field name="precioventa" class="java.lang.Double">
+			<property name="com.jaspersoft.studio.field.name" value="precioventa"/>
+			<property name="com.jaspersoft.studio.field.label" value="precioventa"/>
+			<property name="com.jaspersoft.studio.field.tree.path" value="detalleventa"/>
+		</field>
+		<field name="cantidad" class="java.lang.Double">
+			<property name="com.jaspersoft.studio.field.name" value="cantidad"/>
+			<property name="com.jaspersoft.studio.field.label" value="cantidad"/>
+			<property name="com.jaspersoft.studio.field.tree.path" value="detalleventa"/>
+		</field>
+		<field name="nombreproducto" class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.name" value="nombreproducto"/>
+			<property name="com.jaspersoft.studio.field.label" value="nombreproducto"/>
+			<property name="com.jaspersoft.studio.field.tree.path" value="producto"/>
+		</field>
+	</subDataset>
+	<parameter name="idventa" class="java.lang.Integer" isForPrompting="false">
+		<defaultValueExpression><![CDATA[4]]></defaultValueExpression>
+	</parameter>
+	<queryString language="SQL">
+		<![CDATA[SELECT * FROM COMERCIO;]]>
+	</queryString>
+	<field name="idcomercio" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.name" value="idcomercio"/>
+		<property name="com.jaspersoft.studio.field.label" value="idcomercio"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="comercio"/>
+	</field>
+	<field name="nombre" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="nombre"/>
+		<property name="com.jaspersoft.studio.field.label" value="nombre"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="comercio"/>
+	</field>
+	<field name="nit" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="nit"/>
+		<property name="com.jaspersoft.studio.field.label" value="nit"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="comercio"/>
+	</field>
+	<field name="direccion" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="direccion"/>
+		<property name="com.jaspersoft.studio.field.label" value="direccion"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="comercio"/>
+	</field>
+	<field name="telefono" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="telefono"/>
+		<property name="com.jaspersoft.studio.field.label" value="telefono"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="comercio"/>
+	</field>
+	<field name="iva" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.name" value="iva"/>
+		<property name="com.jaspersoft.studio.field.label" value="iva"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="comercio"/>
+	</field>
+	<title>
+		<band height="80" splitType="Prevent">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<textField>
+				<reportElement x="0" y="0" width="164" height="20" uuid="1cd902ef-302b-408f-9db8-6b4d29d32ec6">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Center">
+					<font fontName="DejaVu Sans" size="16" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nombre}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="20" width="164" height="17" uuid="a39e25c0-413e-463f-a283-ede000b08ee9">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Center">
+					<font fontName="DejaVu Sans" size="13" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{direccion}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="57" width="164" height="17" uuid="cef7a21a-e47d-4d49-aa78-378665466ab1">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Center">
+					<font fontName="DejaVu Sans" size="13" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{telefono}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="40" width="164" height="17" uuid="bb8f2006-f3f5-4ca4-a8fe-51e92ae97c9c">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Center">
+					<font fontName="DejaVu Sans" size="12" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nit}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<detail>
+		<band height="100" splitType="Prevent">
+			<property name="com.jaspersoft.studio.layout"/>
+			<componentElement>
+				<reportElement isPrintRepeatedValues="false" x="0" y="0" width="164" height="100" uuid="01f7900f-0420-4830-872c-112ce512b9e2">
+					<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.VerticalRowLayout"/>
+					<property name="com.jaspersoft.studio.table.style.table_header" value="Table_TH"/>
+					<property name="com.jaspersoft.studio.table.style.column_header" value="Table_CH"/>
+					<property name="com.jaspersoft.studio.table.style.detail" value="Table_TD"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
+					<datasetRun subDataset="detalleventa" uuid="451fba6f-71a2-4461-919b-6e0210117792">
+						<datasetParameter name="idventa_tabla">
+							<datasetParameterExpression><![CDATA[$P{idventa}]]></datasetParameterExpression>
+						</datasetParameter>
+						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					</datasetRun>
+					<jr:column width="90" uuid="897a01de-76a9-4211-a9da-869410e87dac">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column1"/>
+						<jr:detailCell style="DETALLE" height="30">
+							<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.VerticalRowLayout"/>
+							<box>
+								<pen lineColor="#FFFFFF"/>
+								<topPen lineColor="#FFFFFF"/>
+								<bottomPen lineColor="#FFFFFF"/>
+							</box>
+							<textField>
+								<reportElement isPrintRepeatedValues="false" x="0" y="0" width="90" height="30" uuid="f6591b1f-1450-496f-864c-6d7ae6ead1b4"/>
+								<textElement textAlignment="Left">
+									<font isItalic="true"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{nombreproducto}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="20" uuid="2427fd85-78a7-40ac-862d-bce69ed36ab2">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column2"/>
+						<jr:detailCell style="DETALLE" height="30">
+							<box>
+								<pen lineColor="#FFFFFF"/>
+							</box>
+							<textField>
+								<reportElement x="0" y="0" width="20" height="30" uuid="1e62dc1e-f5ef-440c-88a7-7aa9ad8e9a17"/>
+								<textElement textAlignment="Center">
+									<font isItalic="true"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{cantidad}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="54" uuid="d7767612-4c83-4666-9793-c4a0bafb68ff">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column3"/>
+						<jr:detailCell style="DETALLE" height="30">
+							<box>
+								<pen lineColor="#FFFFFF"/>
+							</box>
+							<textField>
+								<reportElement x="0" y="0" width="54" height="30" uuid="8495a852-0088-46a6-93b9-4d5c476d8150"/>
+								<textElement textAlignment="Center">
+									<font isItalic="true"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{precioventa}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+				</jr:table>
+			</componentElement>
+		</band>
+	</detail>
+</jasperReport>

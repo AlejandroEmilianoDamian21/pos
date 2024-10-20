@@ -100,6 +100,4 @@ public class Comercio {
         return idcomercio;
     }
 
-
-
 }

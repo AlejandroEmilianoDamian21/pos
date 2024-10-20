@@ -18,7 +18,7 @@ public class VentaDAO {
         this.conexionBD = conexionBD;
     }
     public int guardar(Venta v) throws SQLException {
-        String sql = "INSERT INTO public.venta(\n"
+        String sql = "INSERT INTO public.ventas(\n"
                 + "	idcliente, idusuario, formadepago)\n"
                 + "	VALUES ("+v.getCliente().getIdcliente()+" , "+ Sesion.getUsuario(null).getIdUsuario()+" , '"+v.getFormadepago()+"');";
 
@@ -29,7 +29,7 @@ public class VentaDAO {
             ResultSet rs = pst.getGeneratedKeys();
             rs.next();
             int idventa = rs.getInt(1);
-            sql = "INSERT INTO public.detalleventa( idventa, idproducto, preciodeventa, cantidad) VALUES\n";
+            sql = "INSERT INTO public.detalleventa( idventa, idproducto, precioventa, cantidad) VALUES\n";
             for (DetalleVenta dv : v.getDetalleventa()) {
                 sql += "(";
                 sql += " "+idventa+", "+dv.getProducto().getIdproducto()+", "+dv.getPrecioventa()+", "+dv.getCantidad()+" ";

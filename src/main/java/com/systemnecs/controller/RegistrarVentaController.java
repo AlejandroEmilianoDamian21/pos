@@ -316,9 +316,10 @@ public class RegistrarVentaController implements Initializable {
 
     @FXML
     void pagar(ActionEvent event) throws IOException {
+
         if(comboCliente.getSelectionModel().getSelectedItem()== null){
             new Tada(comboCliente).play();
-            org.controlsfx.control.Notifications.create().title("Aviso").text("Seleccione un cliente").position(Pos.CENTER).showWarning();
+            Notifications.create().title("Aviso").text("Seleccione un cliente").position(Pos.CENTER).showWarning();
             return;
         }
 
@@ -331,7 +332,7 @@ public class RegistrarVentaController implements Initializable {
         VBox vbox = loader.load();
 
         PagarController controller = loader.getController();
-        //controller.setVenta(v);
+        controller.setVenta(v);
 
         Scene scene = new Scene(vbox);
         Stage stage = new Stage();
@@ -344,14 +345,14 @@ public class RegistrarVentaController implements Initializable {
         stage.setIconified(false);
         stage.showAndWait();
 
-        //if (controller.getIdventa > 0){
+        if (controller.getIdventa() > 0){
             comboCliente.getSelectionModel().clearSelection();
             listaPedido.clear();
             cjCodigoBarras.requestFocus();
             txtSubtotal.setText("$0");
             txtIva.setText("$0");
             txtTotal.setText("$0");
-        //}
+        }
     }
 
     @FXML

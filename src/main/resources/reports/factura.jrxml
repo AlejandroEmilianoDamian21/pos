@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.0.3.final using JasperReports Library version 6.0.3  -->
+<!-- 2020-08-13T23:08:54 -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="factura" pageWidth="164" pageHeight="200" columnWidth="164" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="51d9d589-5cc1-48e6-aa41-445d4b159e90">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="Ventas"/>
+	<property name="com.jaspersoft.studio.unit." value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.topMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.bottomMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.leftMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.rightMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
+	<style name="DETALLE">
+		<conditionalStyle>
+			<conditionExpression><![CDATA[new Boolean($V{REPORT_COUNT}.intValue()%2==0)]]></conditionExpression>
+			<style mode="Opaque" backcolor="#D4F4FC"/>
+		</conditionalStyle>
+	</style>
+	<subDataset name="detalleventa" uuid="f471580f-ec0a-4769-b559-2a466181d509">
+		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="Ventas"/>
+		<parameter name="idventa_tabla" class="java.lang.Integer">
+			<parameterDescription><![CDATA[]]></parameterDescription>
+		</parameter>
+		<queryString language="SQL">
+			<![CDATA[SELECT dv.*,
+	p.nombreproducto
+FROM detalleventa dv
+	inner join venta v ON 
+	 v.idventa = dv.idventa 
+	inner join producto p ON 
+	 p.idproducto = dv.idproducto 
+WHERE 
+	 v.idventa = $P{idventa_tabla}]]>
+		</queryString>
+		<field name="iddetalleventa" class="java.lang.Integer"/>
+		<field name="idventa" class="java.lang.Integer"/>
+		<field name="idproducto" class="java.lang.Integer"/>
+		<field name="preciodeventa" class="java.lang.Double"/>
+		<field name="cantidad" class="java.lang.Double"/>
+		<field name="nombreproducto" class="java.lang.String"/>
+	</subDataset>
+	<parameter name="idventa" class="java.lang.Integer" isForPrompting="false">
+		<parameterDescription><![CDATA[]]></parameterDescription>
+		<defaultValueExpression><![CDATA[1]]></defaultValueExpression>
+	</parameter>
+	<queryString language="SQL">
+		<![CDATA[SELECT * FROM comercio;]]>
+	</queryString>
+	<field name="idcomercio" class="java.lang.Integer"/>
+	<field name="nombre" class="java.lang.String"/>
+	<field name="nit" class="java.lang.String"/>
+	<field name="direccion" class="java.lang.String"/>
+	<field name="telefono" class="java.lang.String"/>
+	<field name="iva" class="java.lang.Integer"/>
+	<title>
+		<band height="55" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="0" width="164" height="13" uuid="21902a8c-f42f-4cf6-a5dc-79cc5bdef412">
+					<property name="local_mesure_unitwidth" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="local_mesure_unitheight" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="local_mesure_unitx" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{nombre}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="13" width="164" height="13" uuid="b4c4d170-af44-41db-a441-cc8ea6ca4a15">
+					<property name="local_mesure_unitwidth" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="local_mesure_unitheight" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="local_mesure_unitx" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{nit}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="26" width="164" height="13" uuid="af39261e-4f1b-4241-bbda-c18fff86a690">
+					<property name="local_mesure_unitwidth" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="local_mesure_unitheight" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="local_mesure_unitx" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{direccion}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="39" width="164" height="13" uuid="7594a4e1-c7a1-4cbb-8e60-106f78076398">
+					<property name="local_mesure_unitwidth" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="local_mesure_unitheight" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="local_mesure_unitx" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{telefono}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<detail>
+		<band height="123" splitType="Stretch">
+			<property name="local_mesure_unitheight" value="pixel"/>
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<componentElement>
+				<reportElement x="0" y="0" width="164" height="123" uuid="378f7b76-d27a-45cf-b8e9-9767b7de27b5"/>
+				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
+					<datasetRun subDataset="detalleventa" uuid="9877167f-cdad-4855-a063-025fceca147f">
+						<datasetParameter name="idventa_tabla">
+							<datasetParameterExpression><![CDATA[$P{idventa}]]></datasetParameterExpression>
+						</datasetParameter>
+						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					</datasetRun>
+					<jr:column width="90" uuid="d1f4aa80-589d-4f4a-b1ac-0c4c4bed3e27">
+						<property name="local_mesure_unitwidth" value="pixel"/>
+						<jr:detailCell style="DETALLE" height="30">
+							<textField isStretchWithOverflow="true">
+								<reportElement style="DETALLE" x="0" y="0" width="90" height="30" uuid="f67e3560-7cae-4781-90b4-b7cfa9484f69"/>
+								<textElement>
+									<font fontName="Arial" size="8"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{nombreproducto}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="30" uuid="91b425df-6c71-4874-977d-73dad435c010">
+						<property name="local_mesure_unitwidth" value="pixel"/>
+						<jr:detailCell style="DETALLE" height="30">
+							<textField>
+								<reportElement style="DETALLE" x="0" y="0" width="30" height="30" uuid="77ee277f-ce4b-4d39-b650-d7793c3833d6"/>
+								<textElement>
+									<font fontName="Arial" size="8"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{cantidad}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="44" uuid="36e6ba0f-3884-42e2-9237-4ab2d676da93">
+						<property name="local_mesure_unitwidth" value="pixel"/>
+						<jr:detailCell style="DETALLE" height="30">
+							<textField>
+								<reportElement style="DETALLE" x="0" y="0" width="44" height="30" uuid="28257645-60dd-49a9-b2cc-24b81b757e54"/>
+								<textElement>
+									<font fontName="Arial" size="8"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{preciodeventa}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+				</jr:table>
+			</componentElement>
+		</band>
+	</detail>
+</jasperReport>
