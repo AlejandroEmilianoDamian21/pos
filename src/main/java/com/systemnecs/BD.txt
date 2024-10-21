@@ -83,3 +83,34 @@ create table public.comercio(
 	telefono text null,
 	iva int4 null
 );
+
+-- DROP FUNCTION public.control_stock();
+
+CREATE OR REPLACE FUNCTION public.control_stock()
+ RETURNS trigger
+ LANGUAGE plpgsql
+AS $function$
+	DECLARE nombre text;
+	BEGIN
+		IF(TG_OP = 'INSERT') THEN
+			IF ( NEW.cantidad<=(SELECT stock FROM producto p WHERE p.idproducto=NEW.idproducto) ) THEN
+			   UPDATE producto SET stock=(stock-NEW.cantidad) WHERE idproducto=NEW.idproducto;
+			   RETURN NEW;
+			else
+				nombre :=  (select nombreproducto from producto p where p.idproducto=NEW.idproducto);
+				RAISE EXCEPTION USING MESSAGE = 'EL PRODUCTO ' || nombre || ' NO TIENE LA CANTIDAD DE (' || new.cantidad || ') DISPONBILE' ;
+				RETURN NULL;
+			END IF;
+		ELSEIF (TG_OP = 'DELETE') THEN
+	    	UPDATE producto SET stock=(stock+OLD.cantidad) WHERE idproducto=OLD.idproducto;
+			RETURN OLD;
+	    END IF;
+	END;
+$function$
+;
+create trigger trigger_control_stock before
+insert
+    or
+delete
+    on
+    public.detalleventa for each row execute function control_stock()
