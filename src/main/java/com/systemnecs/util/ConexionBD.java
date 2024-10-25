@@ -10,10 +10,14 @@ public class ConexionBD {
     private Statement statement;
 
     //Tiki-PC
-    private static String IP = "localhost", PUERTO ="5432", BD = "ventas" , USER = "postgres" , PASS = "admin";
+    //private static String IP = "localhost", PUERTO ="5432", BD = "ventas" , USER = "postgres" , PASS = "admin";
 
     //Digicom-PC
-    //private static String IP = "localhost", PUERTO ="5432", BD = "VENTAS" , USER = "postgres" , PASS = "admin";
+    private static final String IP = "localhost";
+    private static final String PUERTO ="5432";
+    private static final String BD = "VENTAS";
+    private static final String USER = "postgres";
+    private static final String PASS = "admin";
 
 
     public ConexionBD(){
@@ -30,7 +34,7 @@ public class ConexionBD {
     }
 
     public ResultSet CONSULTAR(String sql) throws  SQLException{
-        ResultSet rs = null;
+        ResultSet rs;
         rs = statement.executeQuery(sql);
         return rs;
     }

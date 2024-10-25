@@ -9,7 +9,7 @@ import java.util.List;
 
 public class ProductoDAO {
 
-    private ConexionBD conexionBD;
+    private final ConexionBD conexionBD;
 
     public  ProductoDAO(ConexionBD conexionBD){
         this.conexionBD = conexionBD;
@@ -19,7 +19,7 @@ public class ProductoDAO {
 
         List<Producto> productos = new ArrayList<>();
 
-        Producto p = null;
+        Producto p;
         ResultSet rs = conexionBD.CONSULTAR("SELECT * FROM producto");
         while (rs.next()){
             p = new Producto();
@@ -46,7 +46,7 @@ public class ProductoDAO {
     }
 
     public int guardar(Producto pro) throws SQLException {
-        String sql ="";
+        String sql;
 
         if (pro.getIdproducto() == 0 ){
             sql = "INSERT INTO producto (";

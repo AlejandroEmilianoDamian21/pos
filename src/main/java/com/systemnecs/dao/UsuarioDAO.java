@@ -9,7 +9,7 @@ import java.sql.SQLException;
 
 public class UsuarioDAO {
 
-    private ConexionBD conexionBD;
+    private final ConexionBD conexionBD;
 
     public UsuarioDAO(ConexionBD conexionBD) {
         this.conexionBD = conexionBD;

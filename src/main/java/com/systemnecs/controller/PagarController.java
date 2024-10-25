@@ -80,13 +80,13 @@ public class PagarController implements Initializable {
                     if ((idventa=ventaDAO.guardar(this.venta)) > 0){
                         com.systemnecs.util.Metodos.closeEffect(root);
                         bandera=true;
-                        //JasperReport jr = (JasperReport) JRLoader.loadObject(new URL(getClass().getResource("/reports/factura.jasper").toString()));
-                        //Map<String, Object> parametros = new HashMap<>();
-                        //parametros.put("idventa", idventa);
-                        //JasperPrint jasperprint = JasperFillManager.fillReport(jr, parametros, this.conexionBD.getConexion());
-                        //JasperViewer viewer = new JasperViewer(jasperprint, false);
-                        //viewer.setVisible(true);
-                        //viewer.toFront();
+                        JasperReport jr = (JasperReport) JRLoader.loadObject(new URL(getClass().getResource("/reports/factura.jasper").toString()));
+                        Map<String, Object> parametros = new HashMap<>();
+                        parametros.put("idventa", idventa);
+                        JasperPrint jasperprint = JasperFillManager.fillReport(jr, parametros, this.conexionBD.getConexion());
+                        JasperViewer viewer = new JasperViewer(jasperprint, false);
+                        viewer.setVisible(true);
+                        viewer.toFront();
                     }
                     if (bandera == true){
                         org.controlsfx.control.Notifications.create().text("Venta realizada con exito").position(Pos.CENTER).showConfirm();
